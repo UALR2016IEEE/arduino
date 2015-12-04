@@ -14,6 +14,7 @@ distance_ir_sensor::distance_ir_sensor()
 {
 }
 
+
 //getDistanceCentimeter(): Returns the distance in cetimeters: between 3-36cm (3 & 37 are boundary values)
 int distance_ir_sensor::getDistanceCentimeter()
 {
