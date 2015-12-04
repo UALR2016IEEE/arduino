@@ -46,7 +46,6 @@ void setup()
 
 }
 
-
 void loop()
 {
  if (Serial.available() > 0)
@@ -56,6 +55,7 @@ void loop()
  }
 }
 
+// Need help, Is this where I bring in variable values???
 void exec_command()
 {
    /*
@@ -76,13 +76,12 @@ int get_int(int chars)
     return encoded - 48;
 }
 
-
-
 void show_sensors ()
 {
-
+    // Do I need this? If so how do I set it up
 }
 
+//Need explanation of this entire thing
 boolean read_serial()
 {
     if (Serial.available())
@@ -104,8 +103,27 @@ boolean read_serial()
                 {
                     dir = get_int();
                 }
-                Serial.print("move:");
+                Serial.print("move: ");
+                Serial.println(move_blocks);
+                return true;
 
         }
+        if (readbyte == 64)
+        {
+            if (Serial.available())
+            {
+                dir = get_int();
+                Serial.print("dir: ");
+                Serial.println(dir);
+            }
+            return true;
+        }
+        if (readbyte == 35)
+        {
+            Serial.print("button");
+            Serial.print(button);
+            return false;
+        }
+
     }
 }
