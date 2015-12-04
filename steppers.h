@@ -1,6 +1,7 @@
 //
 // Created by Autumn Rouse on 12/2/15.
 //
+//Totally OFF, missing parts to communicate with the pi and evaluate the values
 
 #ifndef steppers_h
 #define steppers_h

@@ -1,6 +1,7 @@
 //
 // Created by Autumn Rouse on 12/3/15.
 //
+//I think this is mostly right
 
 
 #ifndef distance_ir_sensor_h
@@ -10,7 +11,7 @@
 #include "Arduino.h"
 #else
 //may not need
-#include"WProgram.h"
+#include"WProgram.h"        //Do I need this?
 #include <pins_arduino.h>
 #endif
 
