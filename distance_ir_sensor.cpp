@@ -38,9 +38,8 @@ int distance_ir_sensor::getDistanceCentimeter()
 
 void setup()
 {
-    Serial.begin(9600);
-    Dist_1.begin(A0);   //may have to change look at arduino
-    Dist_2.begin(A1);   //may have to change look at arduino
+    Dist_1.begin(A0);   //may have to change pin look at arduino
+    Dist_2.begin(A1);   //may have to change pin look at arduino
 }
 
 void loop()
