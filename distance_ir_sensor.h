@@ -26,5 +26,4 @@ class distance_ir_sensor : public AnalogDistanceSensor
         distance_ir_sensor();
         int getDistanceCentimeter();
 };
-
 #endif //distance_ir_sensor_h
