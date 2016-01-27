@@ -3,7 +3,7 @@
 //
 //I think this is mostly right
 
-
+/*
 #ifndef distance_ir_sensor_h
 #define distance_ir_sensor_h
 
@@ -16,7 +16,7 @@
 #endif
 
 
-#include "AnalogDistanceSensor.h"
+
 
 
 class distance_ir_sensor : public AnalogDistanceSensor
@@ -27,3 +27,4 @@ class distance_ir_sensor : public AnalogDistanceSensor
         int getDistanceCentimeter();
 };
 #endif //distance_ir_sensor_h
+ */
