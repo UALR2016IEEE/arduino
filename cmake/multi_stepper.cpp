@@ -3,7 +3,7 @@
 //
 
 #include <AccelStepper.h>
-#include <MultiStepper.h>
+
 
 AccelStepper stepper1 (AccelStepper::DRIVER, 46, 47);
 AccelStepper stepper2(AccelStepper::DRIVER, 48, 49);
@@ -17,7 +17,6 @@ double Circum = 3.14159 * wheel_diameter;    //in millimeters
 int step_size = 4;   //by default 1/4 stepper
 int stepsToTake1, stepsToTake2, stepsToTake3, stepsToTake4 = 0;
 double distanceToTravel[4];  //needs to be in millimeters (array)
-//int movTo1, movTo2, movTo3, movTo4 = 0;
 float acc1, acc2, acc3, acc4;     //may change to array
 int r_degree;
 long positions[4];
@@ -35,29 +34,25 @@ void setup()
     //Configure steppers
     stepper1.setMaxSpeed(1000);
     stepper1.setAcceleration(acc1);
-    stepper1.moveTo(movTo1);
+    stepper1.moveTo(step1);
 
     stepper2.setMaxSpeed(1000);
     stepper2.setAcceleration(acc2);
-    stepper2.moveTo(movTo2);
+    stepper2.moveTo(step2);
 
     stepper3.setMaxSpeed(1000);
     stepper3.setAcceleration(acc3);
-    stepper3.moveTo(movTo3);
+    stepper3.moveTo(step3);
 
     stepper4.setMaxSpeed(1000);
     stepper4.setAcceleration(acc4);
-    stepper4.moveTo(movTo4);
+    stepper4.moveTo(step4);
 
 
 }
 
 void loop()
 {
-    stepper1.line(distanceToTravel[0]);
-    stepper2.line(distanceToTravel[1]);
-    stepper3.line(distanceToTravel[2]);
-    stepper4.line(distanceToTravel[3]);
 
     //array of stepper positions
     long positions[4];
@@ -65,10 +60,12 @@ void loop()
     postions[1] = step2;
     postions[2] = step3;
     postions[3] = step4;
-    steppers.moveTo(positions);
-    steppers.runSpeedToPosition();
-    delay (500);
-    step1, step2 = 0;
+    stepper1.moveTo(positions[0]);
+    stepper2.moveTo(positions[0]);
+    stepper3.moveTo(positions[0]);
+    stepper4.moveTo(positions[0]);
+
+    for
 
 }
 
