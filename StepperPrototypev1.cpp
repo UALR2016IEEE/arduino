@@ -3,48 +3,54 @@
 //
 
 #include <AccelStepper.h>
+#include <stdlib.h>
 
 
 AccelStepper stepper1 (AccelStepper::DRIVER, 46, 47);
 AccelStepper stepper2(AccelStepper::DRIVER, 48, 49);
 AccelStepper stepper3(AccelStepper::DRIVER, 50, 51);
 AccelStepper stepper4(AccelStepper::DRIVER, 52, 53);
+int enablePin = 32; //only 1 pin?
+
+//define digital pins as drivers and digitalwrite out to them to enable motor controller, output 1 or 0, connecting
+//to arduino, be able to enable individually (DONE)
+
 
 //Variable declarations - doubles may be able to change to float(take up less memory)
 
 double wheel_diameter = 38.00;   // in millimeters,
 double circumference = 3.14159 * wheel_diameter;    //in millimeters
-int step_size = 4;   //by default 1/4 stepper
-float acc1, acc2, acc3, acc4;     //may change to array
+int step_size = 2;   //by default 1/2 stepper, has been changed
 float dist1, dist2, dist3, dist4 = 0;
-float inputDist1, inputDist2, inputDist3, inputDist4;
+int inputDist1, inputDist2, inputDist3, inputDist4;
 int step1, step2, step3, step4 = 0;  //may change to array
-//int dir1, dir2, dir3, dir4 = 0;    //unnecessary ? (taken care of by negative or positive)
+const long MAXSPEED = 15000;
+const long ACCELERATION = 600;
+
+void parseSerial();
+void line(int length, double vector);
+void mathHelper(int length, double vector);
+long stepHelper (double len);
 
 void setup()
 {
-    Serial.begin(9600);
-    Serial.flush();
+    Serial.begin(115200);
+    pinMode(enablePin, OUTPUT);
+    digitalWrite(enablePin, HIGH);
+
     //Configure steppers
-    stepper1.setMaxSpeed(1000);
-    stepper1.setAcceleration(acc1);
+    stepper1.setMaxSpeed(MAXSPEED);
+    stepper1.setAcceleration(ACCELERATION);
 
-    stepper2.setMaxSpeed(1000);
-    stepper2.setAcceleration(acc2);
+    stepper2.setMaxSpeed(MAXSPEED);
+    stepper2.setAcceleration(ACCELERATION);
 
-    stepper3.setMaxSpeed(1000);
-    stepper3.setAcceleration(acc3);
+    stepper3.setMaxSpeed(MAXSPEED);
+    stepper3.setAcceleration(ACCELERATION);
 
-    stepper4.setMaxSpeed(1000);
-    stepper4.setAcceleration(acc4);
+    stepper4.setMaxSpeed(MAXSPEED);
+    stepper4.setAcceleration(ACCELERATION);
 
-    pinMode(44, OUTPUT);
-    digitalWrite(44, HIGH);
-
-    pinMode (42, INPUT);
-    int input = digitalRead(42);
-
-    acc1, acc2, acc3, acc4 = 200;
     inputDist1, inputDist4 = 10000;
     inputDist2, inputDist3 = -10000;
 
@@ -52,65 +58,63 @@ void setup()
 
 void loop()
 {
-    /*if (Serial.available > 0)
-    {
-
-        SerialData = Serial.read();
-        Serial.println(serialData); */
-    line(inputDist1, inputDist2, inputDist3, inputDist4);
-    // }
-
+    parseSerial();
 
 }
 
-void line(float inputDist1, float inputDist2, float inputDist3, float inputDist4)
+
+void parseSerial ()
 {
-    dist1 = inputDist1;
-    dist2 = inputDist2;
-    dist3 = inputDist3;
-    dist4 = inputDist4;
+    char bufferInt[4];
+    char bufferFloat [5];
+    int length;
+    double angle;
 
-    if (dist1 > 0) //distance in millimeters
-    {
-        step1  = dist1 / circumference;
-        step1 = step1 * step_size;
-        stepper1.moveTo(step1);
-        stepper1.run();
+    //case statement for serial language
+    //take in info and put it in right area - read each line - recast them to right type
+    if (Serial.available() > 0) {
+        int inByte = Serial.read();
+
+        switch (inByte) {
+            case 'L':
+                Serial.readBytes(bufferInt, 4);
+                length = atoi(bufferInt);
+                Serial.readBytes(bufferFloat, 5);
+                angle = atof(bufferFloat);
+                line(length, angle);
+                break;
+
+
+        }
     }
-    else
-    { }
+}
 
+void line(int length, double angle)
+{
 
-    if (dist2 > 0) //distance in millimeters
-    {
-        step2  = dist2 / circumference;
-        step2 = step2 * step_size;
-        stepper2.moveTo(step2);
-        stepper2.run();
-    }
-    else
-    { }
+    int rawDistance = length;
+    int rawRadians = angle;
+    long x, y;
 
-    if (dist3 > 0) //distance in millimeters
-    {
-        step3  = dist3 / circumference;
-        step3 = step3 * step_size;
-        stepper3.moveTo(step3);
-        stepper3.run();
-    }
-    else
-    { }
+    x = length * cos(angle);
+    y = length * sin(angle);
 
-    if (dist4 > 0) //distance in millimeters
-    {
-        step4  = dist4 / circumference;
-        step4 = step4 * step_size;
-        stepper4.moveTo(step4);
-        stepper4.run();
-        return;
-    }
-    else
-    { }
+    long x_steps = stepHelper(x);
+    long y_steps = stepHelper(y);
 
+    stepper1.moveTo(x_steps);
+    stepper2.moveTo(-y_steps);
+    stepper3.moveTo(y_steps);
+    stepper4.moveTo(-x_steps);
 
+}
+
+long stepHelper (double len)
+{
+    long step1  = len / circumference;
+    step1 = step1 * step_size;
+    return step1;
+    //figure how far each wheel needs to go
+    //can be another fuction - angle to arc length - to rotations - to steps (rotation)
+    //want to get to arcs (non linear function)
 }
