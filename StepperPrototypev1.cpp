@@ -117,7 +117,12 @@ void line(int length, double angle)
     int rawRadians = angle;
     long x, y;
 
-    x = length * cos(angle);
+    if (angle != 0)
+    {
+        rotate(rawRadians);
+    }
+
+    x = length * cos(angle); // i feel x and y are backwards x - sin, y - cos, check with them
     y = length * sin(angle);
 
     long x_steps = stepHelper(x);
@@ -144,12 +149,7 @@ void rotate(double angle)
     stepper2.moveTo(stepsRotate);
     stepper3.moveTo(stepsRotate);
     stepper4.moveTo(stepsRotate);
-
-
-
-    //getting exact wheel to mid robot distance. used for arc length s=r*theta, theta in radians
-
-
+    // s=r*theta, theta in radians
 
 }
 
@@ -186,7 +186,5 @@ long stepHelper (double len)
     double step1  = len / CIRCUMFERENCE;
     step1 = step1 * step_size;
     return step1;
-    //figure how far each wheel needs to go
-    //can be another fuction - angle to arc length - to rotations - to steps (rotation)
     //want to get to arcs (non linear function)
 }
