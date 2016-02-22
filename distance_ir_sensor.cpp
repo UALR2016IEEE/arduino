@@ -4,7 +4,6 @@
 //I think this is mostly right
 
 #include <Arduino.h>
-#include <Serial>;
 //#include "distance_ir_sensor.h"
 
 #define ir_sensor1 1 //Sharp IR (4-30cm, analog)
