@@ -23,9 +23,7 @@ int enablePin4 = 35;
 
 
 int step_size = (360 / 1.8) * 2 * 5 * 1.05;   //1/2 stepper, has been changed
-float dist1, dist2, dist3, dist4 = 0;
 int inputDist1, inputDist2, inputDist3, inputDist4;
-int step1, step2, step3, step4 = 0;  //may change to array
 
 const double ROBOT_RADIUS = 136.91; // in millimeters
 const double WHEEL_DIAMETER = 38.00;   // in millimeters,
@@ -55,8 +53,8 @@ void setup()
     stepper4.setMaxSpeed(MAXSPEED);
     stepper4.setAcceleration(ACCELERATION);
 
-    inputDist1, inputDist4 = 10000;
-    inputDist2, inputDist3 = -10000;
+    //inputDist1, inputDist4 = 10000;
+    //inputDist2, inputDist3 = -10000;
 
     pinMode(enablePin1, OUTPUT);
     pinMode(enablePin2, OUTPUT);
@@ -73,8 +71,6 @@ void loop()
     stepper2.run();
     stepper3.run();
     stepper4.run();
-
-
 }
 
 
@@ -94,8 +90,8 @@ void parseSerial ()
 
         switch (inByte) {
             case 'L':
-                Serial.readBytes(bufferInt, 4);
-                length = atoi(bufferInt);
+                Serial.readBytes(bufferInt, 4);   //needed to do something with this talk to kori, think need to
+                length = atoi(bufferInt);         // take a negative for different direction
                 Serial.readBytes(bufferFloat, 6);
                 angle = atof(bufferFloat);
                 line(length, angle);
@@ -112,7 +108,6 @@ void parseSerial ()
 
 void line(int length, double angle)
 {
-
     int rawDistance = length;
     int rawRadians = angle;
     long x, y;
@@ -134,7 +129,6 @@ void line(int length, double angle)
     stepper2.moveTo(-y_steps);
     stepper3.moveTo(y_steps);
     stepper4.moveTo(-x_steps);
-
 }
 
 void rotate(double angle)
@@ -150,7 +144,6 @@ void rotate(double angle)
     stepper3.moveTo(stepsRotate);
     stepper4.moveTo(stepsRotate);
     // s=r*theta, theta in radians
-
 }
 
 void enableMotors(int enableInput)
