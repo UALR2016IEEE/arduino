@@ -27,7 +27,7 @@ float dist1, dist2, dist3, dist4 = 0;
 int inputDist1, inputDist2, inputDist3, inputDist4;
 int step1, step2, step3, step4 = 0;  //may change to array
 
-const double ROBOT_RADIUS = 127; // in millimeters
+const double ROBOT_RADIUS = 136.91; // in millimeters
 const double WHEEL_DIAMETER = 38.00;   // in millimeters,
 const double CIRCUMFERENCE = 3.14159 * WHEEL_DIAMETER;    //in millimeters
 const long MAXSPEED = 300;
