@@ -85,13 +85,15 @@ void parseSerial ()
 
     //case statement for serial language
     //take in info and put it in right area - read each line - recast them to right type
-    if (Serial.available() > 0) {
+    if (Serial.available() > 0)
+    {
         int inByte = Serial.read();
 
-        switch (inByte) {
+        switch (inByte)
+        {
             case 'L':
-                Serial.readBytes(bufferInt, 4);   //needed to do something with this talk to kori, think need to
-                length = atoi(bufferInt);         // take a negative for different direction
+                Serial.readBytes(bufferInt, 4);
+                length = atoi(bufferInt);
                 Serial.readBytes(bufferFloat, 6);
                 angle = atof(bufferFloat);
                 line(length, angle);
@@ -112,12 +114,12 @@ void line(int length, double angle)
     int rawRadians = angle;
     long x, y;
 
-    if (angle != 0)
+    if (length == 0 && angle != 0)
     {
         rotate(rawRadians);
     }
 
-    x = length * cos(angle); // i feel x and y are backwards x - sin, y - cos, check with them
+    x = length * cos(angle);
     y = length * sin(angle);
 
     long x_steps = stepHelper(x);
