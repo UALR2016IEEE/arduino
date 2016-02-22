@@ -11,9 +11,9 @@ AccelStepper stepper2(AccelStepper::DRIVER, 48, 49);
 AccelStepper stepper3(AccelStepper::DRIVER, 50, 51);
 AccelStepper stepper4(AccelStepper::DRIVER, 52, 53);
 int enablePin1 = 32;
-int enablePin2 = 33;
-int enablePin3 = 34;
-int enablePin4 = 35;
+//int enablePin2 = 33;
+//int enablePin3 = 34;
+//int enablePin4 = 35;
 
 //define digital pins as drivers and digitalwrite out to them to enable motor controller, output 1 or 0, connecting
 //to arduino, be able to enable individually
@@ -57,9 +57,10 @@ void setup()
     //inputDist2, inputDist3 = -10000;
 
     pinMode(enablePin1, OUTPUT);
-    pinMode(enablePin2, OUTPUT);
-    pinMode(enablePin3, OUTPUT);
-    pinMode(enablePin4, OUTPUT);
+    digitalWrite(enablePin1, LOW);
+  //  pinMode(enablePin2, OUTPUT);
+  //  pinMode(enablePin3, OUTPUT);
+  //  pinMode(enablePin4, OUTPUT);
 
 
 }
@@ -154,24 +155,24 @@ void enableMotors(int enableInput)
     if (setEnable == 1)
     {
         digitalWrite(enablePin1, HIGH);
-        delay(1000);
-        digitalWrite(enablePin2, HIGH);
+       // delay(200);
+       /* digitalWrite(enablePin2, HIGH);
         delay(1000);
         digitalWrite(enablePin3, HIGH);
         delay(1000);
         digitalWrite(enablePin4, HIGH);
-        delay(1000);
+        delay(1000); */
     }
     else
     {
         digitalWrite(enablePin1, LOW);
-        delay(1000);
-        digitalWrite(enablePin2, LOW);
+       // delay(200);
+       /* digitalWrite(enablePin2, LOW);
         delay(1000);
         digitalWrite(enablePin3, LOW);
         delay(1000);
         digitalWrite(enablePin4, LOW);
-        delay(1000);
+        delay(1000); */
     }
 }
 
