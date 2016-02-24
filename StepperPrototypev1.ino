@@ -125,7 +125,7 @@ void line(int length, double angle)
 
     long x_steps = stepHelper(x);
     long y_steps = stepHelper(y);
-   // Serial.println("steps calculated");
+    //Serial.println("steps calculated");
     //Serial.println(x_steps);
     //Serial.println(y_steps);
     stepper1.moveTo(x_steps);
