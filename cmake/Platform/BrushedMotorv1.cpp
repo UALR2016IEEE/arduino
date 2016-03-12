@@ -18,8 +18,8 @@
 
 //Setup communications with roboclaw. Use pins 19 - RX1, 18 - TX1,
 // 17 - RX2, 16 - TX2
-Roboclaw roboclaw1(19, 18, 10000); //serial1
-Roboclaw roboclaw2(17, 16, 10000); //serial2
+RoboClaw roboclaw1(19, 18, 10000); //serial1
+RoboClaw roboclaw2(17, 16, 10000); //serial2
 
 
 void getIR();
