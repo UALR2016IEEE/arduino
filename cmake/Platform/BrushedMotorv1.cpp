@@ -21,7 +21,6 @@
 RoboClaw roboclaw1(19, 18, 10000); //serial1
 RoboClaw roboclaw2(17, 16, 10000); //serial2
 
-
 void getIR();
 void serialEvent();
 void serial1Check();
