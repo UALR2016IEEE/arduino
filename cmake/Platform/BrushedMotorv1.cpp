@@ -3,17 +3,31 @@
 //Set mode to 7 (packet serial address 0x80) and option to 4(38400) on first roboclaw
 //Set mode to 8(address 0x81) on seconds roboclaw
 
+#include <Arduino.h>
+#include <stdlib.h>
 //roboclaw libraries
 #include "BMSerial.h"
 #include "RoboClaw.h"
 
 //Roboclaw Address
 #define address 0x80
+#define address 0x81
+
+#define ir_sensor1 1 //Sharp IR (4-30cm, analog)
+#define ir_sensor2 2 //
 
 //Setup communications with roboclaw. Use pins 19 - RX1, 18 - TX1,
 // 17 - RX2, 16 - TX2
 Roboclaw roboclaw1(19, 18, 10000); //serial1
 Roboclaw roboclaw2(17, 16, 10000); //serial2
+
+
+void getIR();
+void serialEvent();
+void serial1Check();
+void serial2Check();
+void serial1Write();
+void serial2Write();
 
 void setup()
 {
@@ -27,8 +41,10 @@ void setup()
 void loop()
 {
     serialEvent();
+    getIR();
     serial1Check();
     serial2Check();
+
 }
 void serialEvent()
 {
@@ -104,4 +120,22 @@ void serial2Write()
     }
 }
 
+void getIR ()
+{
+    float volts1 = analogRead(ir_sensor1) *0.0048828125; //value from sensor *(5/1024)
+    float volts2 = analogRead(ir_sensor2) *0.0048828125;
+    float distance1 = 13*pow(volts1, -1); //should i turn these into int?
+    float distance2 = 13*pow(volts2, -1);
+
+    if (distance1 <= 30)
+    {
+        String(distance1);
+        Serial.write("P" + distance1);
+    }
+    if (distance2 <= 30)
+    {
+        String(distance2);
+        Serial.write("P" + distance2);
+    }
+}
 
