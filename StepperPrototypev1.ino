@@ -100,7 +100,7 @@ void parseSerial ()
                 line(length, angle);
                 break;
             case 'E':
-                Serial.readBytes(bufferInt, 1);
+                Serial.readBytes(bufferInt, 1);  //figure how to enable individually
                 enableInput = atoi(bufferEnable);
                 enableMotors(enableInput);
                 break;
