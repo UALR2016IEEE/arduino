@@ -10,8 +10,8 @@
 #include "RoboClaw.h"
 
 //Roboclaw Address
-#define address 0x80
-#define address 0x81
+#define address1 0x80
+#define address2 0x81
 
 #define ir_sensor1 1 //Sharp IR (4-30cm, analog)
 #define ir_sensor2 2 //
@@ -20,6 +20,7 @@
 // 17 - RX2, 16 - TX2
 RoboClaw roboclaw1(19, 18, 10000); //serial1
 RoboClaw roboclaw2(17, 16, 10000); //serial2
+
 
 void getIR();
 void serialEvent();
@@ -53,14 +54,14 @@ void serialEvent()
         int inByte = Serial.read();
         switch (inByte)
         {
-            case '254':
+            case 22:
 
                 int x = Serial.read();
-                if (x == '80')
+                if (x == 80)
                 {
                     serial1Write();
                 }
-                else if (x == '81')
+                else if (x == 81)
                 {
                     serial2Write();
                 }
@@ -74,11 +75,11 @@ void serialEvent()
 
 void serial1Check()
 {
-   for (i = 0; i < 6; i++)
-   {
-       int RR1 = Serial1.read();
-       Serial.write(RR);
-   }
+    for (int i = 0; i < 6; i++)
+    {
+        int RR1 = Serial1.read();
+        Serial.write(RR1);
+    }
 
 }
 
@@ -99,7 +100,7 @@ void serial1Write()
     {
         int y = Serial.read();
         Serial1.write(y);
-        if (y == '254')
+        if (y == 22)
         {
             inputEvent1 = false;
         }
@@ -112,8 +113,8 @@ void serial2Write()
 
     while (inputEvent2) {
         int z = Serial.read();
-        Serial2.write(y);
-        if (z == '254') {
+        Serial2.write(z);
+        if (z == 22) {
             inputEvent2 = false;
         }
     }
@@ -128,13 +129,15 @@ void getIR ()
 
     if (distance1 <= 30)
     {
-        String(distance1);
-        Serial.write("P" + distance1);
+        //String dist1 = String(distance1);
+        Serial.print('P');
+        Serial.print(distance1, 6);
     }
     if (distance2 <= 30)
     {
-        String(distance2);
-        Serial.write("P" + distance2);
+        //String dist2 = String(distance2);
+        Serial.print('P');
+        Serial.print(distance2, 6);
     }
 }
 
