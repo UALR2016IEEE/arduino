@@ -13,8 +13,14 @@
 #define ir_sensor1 1 //Sharp IR (4-30cm, analog)
 #define ir_sensor2 2 //
 
-//Setup communications with roboclaw. Use pins 19 - RX1, 18 - TX1,
-// 17 - RX2, 16 - TX2
+int enablePin = 36; //digital pin - motor enable
+int buttonPin = 38; //digital pin - button light up
+int digitalOn = 3; //digital pin - enable and disable interrupt
+int valueOn = 0; // used as toggle for on and off
+int red = 11; //pwm of led
+int green = 10; //pwm of led
+int blue = 9; //pwm of led
+volatile int buttonState = LOW;
 
 void getIR();
 void serialEvent();
@@ -22,6 +28,10 @@ void serial1Check();
 void serial2Check();
 void serial1Write();
 void serial2Write();
+void ledLight();
+void turnOn();
+void controlEn(int buttonState);
+void button();
 
 void setup()
 {
@@ -29,16 +39,69 @@ void setup()
     Serial.begin(115200);
     Serial1.begin(38400);
     Serial2.begin(38400);
+    pinMode(enablePin, OUTPUT);
+    pinMode(buttonPin, OUTPUT);
+//    pinMode(red, OUTPUT);
+//    pinMode(green, OUTPUT);
+//    pinMode(blue, OUTPUT);
+    attachInterrupt(digitalPinToInterrupt(3), turnOn, CHANGE);
+
 }
 
 void loop()
 {
+    // ledLight();
+    button();
+    turnOn();
     serialEvent();
-//    //getIR();
+    getIR();
     serial1Check();
-//    serial2Check();
+    serial2Check();
+    //was grayed out, check it is working
+    //put in status light function - RGB
 
 }
+
+/*void ledLight()
+{
+    //have led red when not in use
+    if (valueOn == 0)
+    {
+        analogWrite(red, 255);
+        analogWrite(green, 3);
+    }
+
+
+}*/
+
+void button()
+{
+    if (buttonState == LOW)
+    {
+        digitalWrite(buttonPin, HIGH);
+        delay(1000);
+        digitalWrite(buttonPin, LOW);
+        delay(1000);
+    }
+    else
+    {
+        digitalWrite(buttonPin, HIGH);
+    }
+}
+void turnOn()
+{
+    buttonState = !buttonState;
+    controlEn(buttonState);
+    //turn led on in the button, make it flash when it is turning on, 50mA button - figure resistor
+
+}
+
+void controlEn(int buttonState)
+{
+    digitalWrite(enablePin, buttonState);
+
+}
+
 void serialEvent()
 {
 
@@ -56,14 +119,16 @@ void serialEvent()
 
 void serial1Check()
 {
-    while (Serial1.available()){
+    while (Serial1.available())
+    {
         Serial.write(Serial1.read());
     }
 }
 
 void serial2Check()
 {
-    while (Serial2.available()){
+    while (Serial2.available())
+    {
         Serial.write(Serial2.read());
     }
 }
