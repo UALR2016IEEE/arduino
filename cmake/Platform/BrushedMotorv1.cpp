@@ -20,6 +20,10 @@
 // 17 - RX2, 16 - TX2
 RoboClaw roboclaw1(19, 18, 10000); //serial1
 RoboClaw roboclaw2(17, 16, 10000); //serial2
+int enablePin1 = 36;
+int enablePin2 = 38;
+int analogOn = 8;
+int valueOn = 0;
 
 
 void getIR();
@@ -28,6 +32,8 @@ void serial1Check();
 void serial2Check();
 void serial1Write();
 void serial2Write();
+void turnOn();
+void controllerEnable;
 
 void setup()
 {
@@ -35,17 +41,47 @@ void setup()
     Serial.begin(115200);
     roboclaw1.begin(38400);
     roboclaw2.begin(38400);
+    pinMode(enablePin1, OUTPUT);
+    pinMode(enablePin2, OUTPUT);
 
 }
 
 void loop()
 {
+    turOn();
     serialEvent();
     getIR();
     serial1Check();
     serial2Check();
+    //put in status light function - RGB
+    //
 
 }
+
+void turnOn()
+{
+    int valueOn = analogRead(analogOn1);
+    if (analogOn > 900)
+    {
+        controllerEnable();
+    }
+}
+
+void controllerEnable()
+{
+    if (analogOn >900)
+    {
+        digitalWrite(enablePin1, HIGH);
+        digitalWrite(enablePin2, HIGH);
+    }
+    else
+    {
+        digitalWrite(enablePin1, LOW);
+        digitalWrite(enablePin2, LOW);
+    }
+
+}
+
 void serialEvent()
 {
 
