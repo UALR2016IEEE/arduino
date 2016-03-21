@@ -5,9 +5,6 @@
 
 #include <Arduino.h>
 #include <stdlib.h>
-//roboclaw libraries
-#include "BMSerial.h"
-#include "RoboClaw.h"
 
 //Roboclaw Address
 #define address1 0x80
@@ -18,13 +15,6 @@
 
 //Setup communications with roboclaw. Use pins 19 - RX1, 18 - TX1,
 // 17 - RX2, 16 - TX2
-RoboClaw roboclaw1(19, 18, 10000); //serial1
-RoboClaw roboclaw2(17, 16, 10000); //serial2
-int enablePin1 = 36;
-int enablePin2 = 38;
-int analogOn = 8;
-int valueOn = 0;
-
 
 void getIR();
 void serialEvent();
@@ -32,56 +22,23 @@ void serial1Check();
 void serial2Check();
 void serial1Write();
 void serial2Write();
-void turnOn();
-void controllerEnable;
 
 void setup()
 {
     //Communicate with roboclaw at 38400bps
     Serial.begin(115200);
-    roboclaw1.begin(38400);
-    roboclaw2.begin(38400);
-    pinMode(enablePin1, OUTPUT);
-    pinMode(enablePin2, OUTPUT);
-
+    Serial1.begin(38400);
+    Serial2.begin(38400);
 }
 
 void loop()
 {
-    turOn();
     serialEvent();
-    getIR();
+//    //getIR();
     serial1Check();
-    serial2Check();
-    //put in status light function - RGB
-    //
+//    serial2Check();
 
 }
-
-void turnOn()
-{
-    int valueOn = analogRead(analogOn1);
-    if (analogOn > 900)
-    {
-        controllerEnable();
-    }
-}
-
-void controllerEnable()
-{
-    if (analogOn >900)
-    {
-        digitalWrite(enablePin1, HIGH);
-        digitalWrite(enablePin2, HIGH);
-    }
-    else
-    {
-        digitalWrite(enablePin1, LOW);
-        digitalWrite(enablePin2, LOW);
-    }
-
-}
-
 void serialEvent()
 {
 
@@ -91,62 +48,37 @@ void serialEvent()
         switch (inByte)
         {
             case 22:
-
-                int x = Serial.read();
-                if (x == 80)
-                {
-                    serial1Write();
-                }
-                else if (x == 81)
-                {
-                    serial2Write();
-                }
-                else
-                {
-                    Serial.print("Invalid Address");
-                }
+                serial1Write();
+                break;
         }
     }
 }
 
 void serial1Check()
 {
-    for (int i = 0; i < 6; i++)
-    {
-        int RR1 = Serial1.read();
-        Serial.write(RR1);
+    while (Serial1.available()){
+        Serial.write(Serial1.read());
     }
-
 }
 
 void serial2Check()
 {
-    for (int j = 0; j < 6; j++)
-    {
-        int RR2 = Serial2.read();
-        Serial.write(RR2);
+    while (Serial2.available()){
+        Serial.write(Serial2.read());
     }
 }
 
 void serial1Write()
 {
-    bool inputEvent1 = true;
-
-    while(inputEvent1)
-    {
-        int y = Serial.read();
-        Serial1.write(y);
-        if (y == 22)
-        {
-            inputEvent1 = false;
-        }
-    }
+    char indata[50];
+    int numbytes = Serial.readBytesUntil(char(22), indata, 50);
+    Serial1.write(indata, numbytes);
 }
 
 void serial2Write()
 {
     bool inputEvent2 = true;
-
+    Serial2.write(81);
     while (inputEvent2) {
         int z = Serial.read();
         Serial2.write(z);
