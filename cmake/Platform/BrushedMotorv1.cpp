@@ -15,7 +15,7 @@
 
 int enablePin = 36; //digital pin - motor enable
 int buttonPin = 38; //digital pin - button light up
-int digitalOn = 3; //digital pin - enable and disable interrupt
+int interruptPin = 3; //digital pin - enable and disable interrupt
 int valueOn = 0; // used as toggle for on and off
 int red = 11; //pwm of led
 int green = 10; //pwm of led
@@ -41,10 +41,11 @@ void setup()
     Serial2.begin(38400);
     pinMode(enablePin, OUTPUT);
     pinMode(buttonPin, OUTPUT);
+    pinMode(interruptPin, INPUT);
 //    pinMode(red, OUTPUT);
 //    pinMode(green, OUTPUT);
 //    pinMode(blue, OUTPUT);
-    attachInterrupt(digitalPinToInterrupt(3), turnOn, CHANGE);
+    attachInterrupt(1, turnOn, CHANGE);
 
 }
 
@@ -52,27 +53,25 @@ void loop()
 {
     // ledLight();
     button();
-    turnOn();
     serialEvent();
     getIR();
     serial1Check();
     serial2Check();
-    //was grayed out, check it is working
     //put in status light function - RGB
 
 }
 
-/*void ledLight()
+void ledLight()
 {
-    //have led red when not in use
+    /*have led red when not in use
     if (valueOn == 0)
     {
         analogWrite(red, 255);
         analogWrite(green, 3);
-    }
+    }*/
 
 
-}*/
+}
 
 void button()
 {
