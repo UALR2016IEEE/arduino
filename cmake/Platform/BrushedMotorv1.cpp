@@ -18,11 +18,12 @@ int enablePin = 36; //digital pin - motor enable
 int buttonPin = 38; //digital pin - button light up
 int interruptPin = 3; //digital pin - enable and disable interrupt
 int valueOn = 0; // used as toggle for on and off
-//int red = 11; //pwm of led
-//int green = 10; //pwm of led
-//int blue = 9; //pwm of led
+int red = 11; //pwm of led
+int green = 10; //pwm of led
+int blue = 9; //pwm of led
 int slideRail = 4;
 int claw = 5;
+int serialPin = 30;
 //int railMaxHeight = 4092; // max value of height input, 5V
 double liftFactor = 1;
 volatile int buttonState = LOW;
@@ -50,15 +51,15 @@ void setup()
     //Communicate with roboclaw at 38400bps
     Serial.begin(115200);
     Serial1.begin(38400);
-    //Serial2.begin(38400); - may not be needed if communicating over 1 serial for both motor controllers
     //pinMode(ir_sensor1, INPUT);
     //pinMode(ir_sensor2, INPUT);
     pinMode(enablePin, OUTPUT);
     pinMode(buttonPin, OUTPUT);
     pinMode(interruptPin, INPUT);
-//    pinMode(red, OUTPUT);
-//    pinMode(green, OUTPUT);
-//    pinMode(blue, OUTPUT);
+    pinMode(serialPin, INPUT);
+    pinMode(red, OUTPUT);
+    pinMode(green, OUTPUT);
+    pinMode(blue, OUTPUT);
     attachInterrupt(1, turnOn, CHANGE);
     myClaw.attach(claw);
     myRail.attach(slideRail);
@@ -73,7 +74,6 @@ void loop()
     serialEvent();
     getIR();
     serial1Check();
-    serial2Check();
 
 }
 
@@ -123,29 +123,30 @@ void controlEn(int buttonState)
 
 void serialEvent()
 {
-
-    if (Serial.available() > 0)
+//are these going to be 5 separate pins to push high when want that method
+    if (digitalRead(serialPin) == HIGH)
+    {
+        serial1Write();
+    }
+    else
     {
         int inByte = Serial.read();
+
         switch (inByte)
         {
-            case 22:
-                serial1Write();
-                break;
-
-            case 7:
+            case '7':
                 lift();
                 break;
 
-            case 6:
+            case '6':
                 lower();
                 break;
 
-            case 5:
+            case '5':
                 open();
                 break;
 
-            case 2:
+            case '2':
                 close();
                 break;
         }
@@ -164,23 +165,18 @@ void serial1Check()
 void serial1Write()
 {
     char indata[50];
-    int numbytes = Serial.readBytesUntil(char(22), indata, 50);
-    Serial1.write(indata, numbytes);
+    int i = 0;
+
+    while (digitalRead(serialPin) == HIGH && i < 50)
+    {
+        indata[i] = Serial.read();
+        i++;
+    }
+    Serial1.write(indata, i);
+
 }
 
-
-//Dont know if I need
-
-/*void serial2Write() //not needed
-{
-    //changed serial2Write to look like serial1Write
-    char indata[50];
-    int numbytes = Serial.readBytesUntil(char(22), indata, 50);
-    Serial2.write(indata, numbytes);
-
-}*/
-
-//method to be included if
+//method to be included if using IR sensors
 /*void getIR ()
 {
     float volts1 = analogRead(ir_sensor1) *0.0048828125; //value from sensor *(5/1024)
@@ -202,7 +198,7 @@ void serial1Write()
     }
 }*/
 
-//in doucumentation said slide rail is 0 to 4092, how to deal with this or leave as 1023?
+//in documentation said slide rail is 0 to 4092, how to deal with this or leave as 1023? - going to test
 void lift()
 {
     int val2 = 4092; //all the way up, was 168 in mapped number when tested
@@ -225,8 +221,7 @@ void lower()
 void close()
 {
     //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
-    int val1 = 110; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
-    val1 = map(val1, 0, 1023, 0, 180);
+    int val1 = 114; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
     myClaw.write(val1);
     delay(15);
 }
@@ -234,8 +229,7 @@ void close()
 void open()
 {
     //this valued is taken from its rating sheet, rated at 180 degree only hits 160
-    int val1 = 160; // open position, make sure
-    val1 = map(val1, 0, 1023, 0, 180); //may
+    int val1 = 170; // open position, make sure
     myClaw.write(val1);
     delay(15);
 }
