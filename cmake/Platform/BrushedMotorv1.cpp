@@ -79,16 +79,16 @@ void loop()
 
 void ledLight()
 {
-    //have led light red when not in use
+    //have led light red when not in use, reversed for PWM, 0 is highest
     if (valueOn == 0)
     {
-        analogWrite(red, 255);
-        analogWrite(green, 3);
+        analogWrite(red, 0);
+        analogWrite(green, 252);
     }
     else if (valueOn == 1) //green when in use
     {
-        analogWrite(red, 4);
-        analogWrite(green, 255);
+        analogWrite(red, 251);
+        analogWrite(green, 0);
     }
 
 }
