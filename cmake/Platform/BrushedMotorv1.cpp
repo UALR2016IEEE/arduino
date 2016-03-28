@@ -5,6 +5,7 @@
 
 #include <Arduino.h>
 #include <stdlib.h>
+#include <Servo.h>
 
 //Roboclaw Address
 #define address1 0x80
@@ -20,7 +21,14 @@ int valueOn = 0; // used as toggle for on and off
 int red = 11; //pwm of led
 int green = 10; //pwm of led
 int blue = 9; //pwm of led
+int slideRail = 4;
+int claw = 5;
+int railLength = 100; // length in mm
+//int railMaxHeight = 4092; // max value of height input, 5V
+double liftFactor = 1;
 volatile int buttonState = LOW;
+Servo myClaw;
+Servo myRail;
 
 void getIR();
 void serialEvent();
@@ -32,7 +40,10 @@ void ledLight();
 void turnOn();
 void controlEn(int buttonState);
 void button();
-
+void lift();
+void lower();
+void open();
+void close();
 void setup()
 {
     //Communicate with roboclaw at 38400bps
@@ -46,6 +57,9 @@ void setup()
 //    pinMode(green, OUTPUT);
 //    pinMode(blue, OUTPUT);
     attachInterrupt(1, turnOn, CHANGE);
+    myClaw.attach(claw);
+    myRail.attach(slideRail);
+
 
 }
 
@@ -112,6 +126,22 @@ void serialEvent()
             case 22:
                 serial1Write();
                 break;
+
+            case 7:
+                lift();
+                break;
+
+            case 6:
+                lower();
+                break;
+
+            case 5:
+                open();
+                break;
+
+            case 2:
+                close();
+                break;
         }
     }
 }
@@ -139,9 +169,15 @@ void serial1Write()
     Serial1.write(indata, numbytes);
 }
 
-void serial2Write()
+void serial2Write() //not needed
 {
-    bool inputEvent2 = true;
+    //changed serial2Write to look like serial1Write
+    char indata[50];
+    int numbytes = Serial.readBytesUntil(char(22), indata, 50);
+    Serial2.write(indata, numbytes);
+
+
+    /* bool inputEvent2 = true;
     Serial2.write(81);
     while (inputEvent2) {
         int z = Serial.read();
@@ -149,7 +185,7 @@ void serial2Write()
         if (z == 22) {
             inputEvent2 = false;
         }
-    }
+    } */
 }
 
 void getIR ()
@@ -172,4 +208,41 @@ void getIR ()
         Serial.print(distance2, 6);
     }
 }
+
+void lift()
+{
+    int val2 = 168; //all the way up
+    //my not need the map effort since when testing I printed the mapped value
+    //see what Kori says
+    val2 = map(val2, 0, 1023, 0, 180);
+    myRail.write(val2);
+    delay(15); // is it necessary for it to get to position?
+}
+
+void lower()
+{
+    int val2 = 70; //all the way down - this needs need to be calibrated when installed on the robot to make sure
+    val2 = map(val2, 0, 1023, 0, 180);
+    myRail.write(val2);
+    delay(15); // is it necessary for it to get to position?
+}
+
+void close()
+{
+    //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
+    int val1 = 110; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
+    val1 = map(val1, 0, 1023, 0, 180);
+    myClaw.write(val1);
+    delay(15);
+}
+
+void open()
+{
+    //this valued is taken from its rating sheet, rated at 180 degree only hits 160
+    int val1 = 160; // open position, make sure
+    val1 = map(val1, 0, 1023, 0, 180); //may
+    myClaw.write(val1);
+    delay(15);
+}
+
 
