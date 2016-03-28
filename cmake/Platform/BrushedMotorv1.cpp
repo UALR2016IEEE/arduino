@@ -11,19 +11,18 @@
 #define address1 0x80
 #define address2 0x81
 
-#define ir_sensor1 1 //Sharp IR (4-30cm, analog)
-#define ir_sensor2 2 //
+//#define ir_sensor1 1 //Sharp IR (4-30cm, analog)
+//#define ir_sensor2 2 //
 
 int enablePin = 36; //digital pin - motor enable
 int buttonPin = 38; //digital pin - button light up
 int interruptPin = 3; //digital pin - enable and disable interrupt
 int valueOn = 0; // used as toggle for on and off
-int red = 11; //pwm of led
-int green = 10; //pwm of led
-int blue = 9; //pwm of led
+//int red = 11; //pwm of led
+//int green = 10; //pwm of led
+//int blue = 9; //pwm of led
 int slideRail = 4;
 int claw = 5;
-int railLength = 100; // length in mm
 //int railMaxHeight = 4092; // max value of height input, 5V
 double liftFactor = 1;
 volatile int buttonState = LOW;
@@ -44,12 +43,16 @@ void lift();
 void lower();
 void open();
 void close();
+
+
 void setup()
 {
     //Communicate with roboclaw at 38400bps
     Serial.begin(115200);
     Serial1.begin(38400);
-    Serial2.begin(38400);
+    //Serial2.begin(38400); - may not be needed if communicating over 1 serial for both motor controllers
+    //pinMode(ir_sensor1, INPUT);
+    //pinMode(ir_sensor2, INPUT);
     pinMode(enablePin, OUTPUT);
     pinMode(buttonPin, OUTPUT);
     pinMode(interruptPin, INPUT);
@@ -65,25 +68,28 @@ void setup()
 
 void loop()
 {
-    // ledLight();
+    ledLight();
     button();
     serialEvent();
     getIR();
     serial1Check();
     serial2Check();
-    //put in status light function - RGB
 
 }
 
 void ledLight()
 {
-    /*have led red when not in use
+    //have led light red when not in use
     if (valueOn == 0)
     {
         analogWrite(red, 255);
         analogWrite(green, 3);
-    }*/
-
+    }
+    else if (valueOn == 1) //green when in use
+    {
+        analogWrite(red, 4);
+        analogWrite(green, 255);
+    }
 
 }
 
@@ -154,13 +160,6 @@ void serial1Check()
     }
 }
 
-void serial2Check()
-{
-    while (Serial2.available())
-    {
-        Serial.write(Serial2.read());
-    }
-}
 
 void serial1Write()
 {
@@ -169,26 +168,20 @@ void serial1Write()
     Serial1.write(indata, numbytes);
 }
 
-void serial2Write() //not needed
+
+//Dont know if I need
+
+/*void serial2Write() //not needed
 {
     //changed serial2Write to look like serial1Write
     char indata[50];
     int numbytes = Serial.readBytesUntil(char(22), indata, 50);
     Serial2.write(indata, numbytes);
 
+}*/
 
-    /* bool inputEvent2 = true;
-    Serial2.write(81);
-    while (inputEvent2) {
-        int z = Serial.read();
-        Serial2.write(z);
-        if (z == 22) {
-            inputEvent2 = false;
-        }
-    } */
-}
-
-void getIR ()
+//method to be included if
+/*void getIR ()
 {
     float volts1 = analogRead(ir_sensor1) *0.0048828125; //value from sensor *(5/1024)
     float volts2 = analogRead(ir_sensor2) *0.0048828125;
@@ -207,22 +200,24 @@ void getIR ()
         Serial.print('P');
         Serial.print(distance2, 6);
     }
-}
+}*/
 
+//in doucumentation said slide rail is 0 to 4092, how to deal with this or leave as 1023?
 void lift()
 {
-    int val2 = 168; //all the way up
-    //my not need the map effort since when testing I printed the mapped value
+    int val2 = 4092; //all the way up, was 168 in mapped number when tested
+    //may not need the map effort since when testing I printed the mapped value
     //see what Kori says
-    val2 = map(val2, 0, 1023, 0, 180);
+    val2 = map(val2, 0, 4092, 0, 180);
     myRail.write(val2);
     delay(15); // is it necessary for it to get to position?
 }
 
 void lower()
 {
-    int val2 = 70; //all the way down - this needs need to be calibrated when installed on the robot to make sure
-    val2 = map(val2, 0, 1023, 0, 180);
+    //was 70 in in mapped number when tested
+    int val2 = 0; //all the way down - this needs need to be calibrated when installed on the robot to make sure
+    val2 = map(val2, 0, 4092, 0, 180);
     myRail.write(val2);
     delay(15); // is it necessary for it to get to position?
 }
