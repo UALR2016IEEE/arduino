@@ -23,8 +23,7 @@ int green = 10; //pwm of led
 int blue = 9; //pwm of led
 int slideRail = 4;
 int claw = 5;
-int serialPin = 30;
-//int railMaxHeight = 4092; // max value of height input, 5V
+int serialPin = 22;
 double liftFactor = 1;
 volatile int buttonState = LOW;
 Servo myClaw;
@@ -64,13 +63,12 @@ void setup()
     myClaw.attach(claw);
     myRail.attach(slideRail);
 
-
 }
 
 void loop()
 {
     ledLight();
-    button();
+    //button();
     serialEvent();
     getIR();
     serial1Check();
