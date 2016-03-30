@@ -25,6 +25,7 @@ int blue = 9; //pwm of led, pin
 int slideRail = 4; //pin
 int claw = 5; //pin
 int serialPin = 22; // pin
+int roboEn = LOW;
 volatile int buttonState = LOW;
 unsigned long lastIntTime = 0;
 unsigned long lastBlinkTime = 0;
@@ -45,6 +46,7 @@ void lift();
 void lower();
 void open();
 void close();
+void returnState();
 
 
 void setup()
@@ -108,6 +110,7 @@ void button() //the button led light method
     else if (buttonState == HIGH)
     {
         digitalWrite(buttonPin, HIGH);
+        roboEn = HIGH;
     }
 }
 void turnOn()
@@ -120,7 +123,7 @@ void turnOn()
     }
 }
 
-void controlEn(int buttonState)
+void controlEn(int roboEn)
 {
     digitalWrite(enablePin, buttonState);
 }
@@ -153,6 +156,11 @@ void serialEvent()
             case '2':
                 close();
                 break;
+
+            case 'b':
+                returnState();
+
+
         }
     }
 }
@@ -239,6 +247,18 @@ void open()
     int val1 = 170; // open position, make sure
     myClaw.write(val1);
     delay(15);
+}
+
+void returnState()
+{
+    if (buttonState == LOW)
+    {
+        Serial.write(false);
+    }
+    else if (buttonState == HIGH)
+    {
+        Serial.write(true);
+    }
 }
 
 
