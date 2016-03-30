@@ -244,7 +244,7 @@ void close()
 void open()
 {
     //this valued is taken from its rating sheet, rated at 180 degree only hits 160
-    int val1 = 170; // open position, make sure
+    int val1 = 166; // open position, make sure
     myClaw.write(val1);
     delay(15);
 }
