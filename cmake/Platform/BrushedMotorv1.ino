@@ -58,9 +58,10 @@ void setup()
     pinMode(red, OUTPUT);
     pinMode(green, OUTPUT);
     pinMode(blue, OUTPUT);
-    attachInterrupt(3, turnOn, CHANGE);
     myClaw.attach(claw);
     myRail.attach(slideRail);
+
+    attachInterrupt(digitalPinToInterrupt(3), turnOn, CHANGE);
 
 }
 
@@ -77,12 +78,12 @@ void loop()
 void ledLight()
 {
     //have led light red when not in use, reversed for PWM, 0 is highest
-    if (valueOn == 0)
+    if (buttonState == LOW)
     {
         analogWrite(red, 0);
         analogWrite(green, 252);
     }
-    else if (valueOn == 1) //green when in use
+    else if (buttonState == HIGH) //green when in use
     {
         analogWrite(red, 251);
         analogWrite(green, 0);
@@ -90,7 +91,7 @@ void ledLight()
 
 }
 
-void button()
+void button() //the button led light method
 {
     if (buttonState == LOW)
     {
@@ -99,7 +100,7 @@ void button()
         digitalWrite(buttonPin, LOW);
         delay(1000);
     }
-    else
+    else if (buttonState == HIGH)
     {
         digitalWrite(buttonPin, HIGH);
     }
@@ -108,8 +109,6 @@ void turnOn()
 {
     buttonState = !buttonState;
     controlEn(buttonState);
-    //turn led on in the button, make it flash when it is turning on, 50mA button - figure resistor
-
 }
 
 void controlEn(int buttonState)
