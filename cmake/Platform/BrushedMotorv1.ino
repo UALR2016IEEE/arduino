@@ -16,7 +16,7 @@
 
 int enablePin = 46; //digital pin - motor enable
 int buttonPin = 50; //digital pin - button light up
-bool lightState = False;
+bool lightState = false;
 int interruptPin = 3; //digital pin - enable and disable interrupt
 int valueOn = 0; // used as toggle for on and off
 int red = 11; //pwm of led, pin
