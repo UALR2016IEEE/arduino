@@ -87,11 +87,13 @@ void ledLight()
     {
         analogWrite(red, 0);
         analogWrite(green, 252);
+        analogWrite(blue, 255);
     }
     else if (buttonState == HIGH) //green when in use
     {
         analogWrite(red, 251);
         analogWrite(green, 0);
+        analogGreen(blue, 255);
     }
 
 }
