@@ -14,17 +14,16 @@
 //#define ir_sensor1 1 //Sharp IR (4-30cm, analog)
 //#define ir_sensor2 2 //
 
-int enablePin = 36; //digital pin - motor enable
-int buttonPin = 38; //digital pin - button light up
+int enablePin = 46; //digital pin - motor enable
+int buttonPin = 50; //digital pin - button light up
 int interruptPin = 3; //digital pin - enable and disable interrupt
 int valueOn = 0; // used as toggle for on and off
-int red = 11; //pwm of led
-int green = 10; //pwm of led
-int blue = 9; //pwm of led
-int slideRail = 4;
-int claw = 5;
-int serialPin = 22;
-double liftFactor = 1;
+int red = 11; //pwm of led, pin
+int green = 10; //pwm of led, pin
+int blue = 9; //pwm of led, pin
+int slideRail = 4; //pin
+int claw = 5; //pin
+int serialPin = 22; // pin
 volatile int buttonState = LOW;
 Servo myClaw;
 Servo myRail;
