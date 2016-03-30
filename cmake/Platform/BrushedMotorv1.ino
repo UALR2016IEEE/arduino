@@ -159,6 +159,7 @@ void serialEvent()
 
             case 'b':
                 returnState();
+                break;
 
 
         }
@@ -251,14 +252,7 @@ void open()
 
 void returnState()
 {
-    if (buttonState == LOW)
-    {
-        Serial.write(false);
-    }
-    else if (buttonState == HIGH)
-    {
-        Serial.write(true);
-    }
+    Serial.write(buttonState);
 }
 
 
