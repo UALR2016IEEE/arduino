@@ -58,7 +58,7 @@ void setup()
     pinMode(red, OUTPUT);
     pinMode(green, OUTPUT);
     pinMode(blue, OUTPUT);
-    attachInterrupt(1, turnOn, CHANGE);
+    attachInterrupt(3, turnOn, CHANGE);
     myClaw.attach(claw);
     myRail.attach(slideRail);
 
