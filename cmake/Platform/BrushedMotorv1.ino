@@ -16,6 +16,7 @@
 
 int enablePin = 46; //digital pin - motor enable
 int buttonPin = 50; //digital pin - button light up
+bool lightState = False;
 int interruptPin = 3; //digital pin - enable and disable interrupt
 int valueOn = 0; // used as toggle for on and off
 int red = 11; //pwm of led, pin
@@ -25,6 +26,8 @@ int slideRail = 4; //pin
 int claw = 5; //pin
 int serialPin = 22; // pin
 volatile int buttonState = LOW;
+unsigned long lastIntTime = 0;
+unsigned long lastBlinkTime = 0;
 Servo myClaw;
 Servo myRail;
 
@@ -61,7 +64,7 @@ void setup()
     myClaw.attach(claw);
     myRail.attach(slideRail);
 
-    attachInterrupt(digitalPinToInterrupt(3), turnOn, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(3), turnOn, FALLING);
 
 }
 
@@ -95,10 +98,12 @@ void button() //the button led light method
 {
     if (buttonState == LOW)
     {
-        digitalWrite(buttonPin, HIGH);
-        delay(1000);
-        digitalWrite(buttonPin, LOW);
-        delay(1000);
+        if (millis() - lastBlinkTime > 1000)
+        {
+            lightState = !lightState;
+            digitalWrite(buttonPin, lightState);
+            lastBlinkTime = millis();
+        }
     }
     else if (buttonState == HIGH)
     {
@@ -107,14 +112,17 @@ void button() //the button led light method
 }
 void turnOn()
 {
-    buttonState = !buttonState;
-    controlEn(buttonState);
+    if (millis() - lastIntTime > 200)
+    {
+        buttonState = !buttonState;
+        controlEn(buttonState);
+        lastIntTime = millis();
+    }
 }
 
 void controlEn(int buttonState)
 {
     digitalWrite(enablePin, buttonState);
-
 }
 
 void serialEvent()
