@@ -64,7 +64,7 @@ void setup()
     myClaw.attach(claw);
     myRail.attach(slideRail);
 
-    attachInterrupt(digitalPinToInterrupt(3), turnOn, FALLING);
+    attachInterrupt(1, turnOn, FALLING);
 
 }
 
