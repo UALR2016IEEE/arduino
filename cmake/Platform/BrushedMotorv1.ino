@@ -187,6 +187,7 @@ void serial1Check()
 
 void serial1Write()
 {
+    Serial.write('1');
     byte indata[50];
     int i = 0;
 
@@ -202,9 +203,8 @@ void serial1Write()
     }
 
     Serial1.write(indata, i);
-    Serial.write('1');
     Serial.write(Serial1.read());
-    //orange
+    //red
     setLight(0,255,255);
 
 }
