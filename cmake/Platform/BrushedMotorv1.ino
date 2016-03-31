@@ -25,7 +25,6 @@ int blue = 9; //pwm of led, pin
 int slideRail = 4; //pin
 int claw = 5; //pin
 int serialPin = 22; // pin
-int roboEn = LOW;
 volatile int buttonState = LOW;
 unsigned long lastIntTime = 0;
 unsigned long lastBlinkTime = 0;
@@ -113,7 +112,6 @@ void button() //the button led light method
     else if (buttonState == HIGH)
     {
         digitalWrite(buttonPin, HIGH);
-        roboEn = HIGH;
     }
 }
 void turnOn()
@@ -126,7 +124,7 @@ void turnOn()
     }
 }
 
-void controlEn(int roboEn)
+void controlEn(int buttonState)
 {
     digitalWrite(enablePin, buttonState);
 }
