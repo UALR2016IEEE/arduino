@@ -245,7 +245,7 @@ void lower()
 void close()
 {
     //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
-    int val1 = 114; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
+    int val1 = 108; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
     myClaw.write(val1);
     delay(15);
 }
