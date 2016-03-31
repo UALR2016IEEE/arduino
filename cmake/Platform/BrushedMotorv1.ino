@@ -93,7 +93,7 @@ void ledLight()
     {
         analogWrite(red, 251);
         analogWrite(green, 0);
-        analogGreen(blue, 255);
+        analogWrite(blue, 255);
     }
 
 }
