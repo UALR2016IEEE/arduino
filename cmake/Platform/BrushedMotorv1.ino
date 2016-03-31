@@ -181,6 +181,7 @@ void serial1Check()
         //purple
         setLight(210, 255, 0);
         Serial.write(Serial1.read());
+
     }
 }
 
@@ -201,6 +202,7 @@ void serial1Write()
     }
 
     Serial1.write(indata, i);
+    Serial.write(Serial1.read());
     //orange
     setLight(0,255,255);
 
@@ -235,7 +237,7 @@ void lift()
     val2 = map(val2, 0, 4092, 0, 180);
     myRail.write(val2);
     delay(15); // is it necessary for it to get to position?
-
+    //blue
     setLight(255, 255, 0);
 }
 
@@ -246,6 +248,7 @@ void lower()
     val2 = map(val2, 0, 4092, 0, 180);
     myRail.write(val2);
     delay(15); // is it necessary for it to get to position?
+    //blue
     setLight(255, 255, 0);
 }
 
@@ -255,6 +258,7 @@ void close()
     int val1 = 108; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
     myClaw.write(val1);
     delay(15);
+    //yellow
     setLight(255, 0, 0);
 }
 
@@ -264,6 +268,7 @@ void open()
     int val1 = 166; // open position, make sure
     myClaw.write(val1);
     delay(15);
+    //yellow
     setLight(255, 0,0);
 }
 
