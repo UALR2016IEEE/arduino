@@ -187,16 +187,14 @@ void serial1Check()
 
 void serial1Write()
 {
-    int i = 0;
-    Serial.write('1');
-    int packet_len = Serial.read();
     byte buf[200];
+    Serial.write('1');
 
-    for(int x=0; x < packet_len; x++){
-        while(!Serial.available()){}
-        Serial1.write(Serial.read());
+    while (digitalRead(serialPin) == HIGH)
+    {
     }
-    Serial.write(packet_len);
+    Serial.readBytes(buf, Seri);
+    Serial1.write(buf, Serial.available());
     Serial.write('1');
     //red
     setLight(0,255,255);
