@@ -131,7 +131,6 @@ void turnOn()
         buttonState = !buttonState;
         controlEn(buttonState);
         lastIntTime = millis();
-        setLight();
     }
 }
 
