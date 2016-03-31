@@ -77,11 +77,9 @@ void setup()
 void loop()
 {
     button();
-    serial1Check();
     serialEvent();
+    serial1Check();
     //getIR();
-
-
 }
 
 void setLight(int r, int g, int b)
@@ -141,7 +139,6 @@ void controlEn(int buttonState)
 
 void serialEvent()
 {
-//are these going to be 5 separate pins to push high when want that method
     if (Serial.available())
     {
         if (digitalRead(serialPin) == HIGH)
@@ -172,8 +169,6 @@ void serialEvent()
                 case 'b':
                     returnState();
                     break;
-
-
             }
         }
     }
@@ -183,12 +178,11 @@ void serial1Check()
 {
     while (Serial1.available())
     {
-        //teal
-        setLight(255, 30, 0);
+        //purple
+        setLight(210, 255, 0);
         Serial.write(Serial1.read());
     }
 }
-
 
 void serial1Write()
 {
@@ -197,18 +191,18 @@ void serial1Write()
 
     while (digitalRead(serialPin) == HIGH && i < 50)
     {
-
-
-
         if (Serial.available())
         {
             indata[i] = Serial.read();
+            //Serial.println(indata[i]);
             i++;
+
         }
     }
+
     Serial1.write(indata, i);
     //orange
-    setLight(0,180,255);
+    setLight(0,255,255);
 
 }
 
@@ -234,13 +228,10 @@ void serial1Write()
     }
 }*/
 
-//in documentation said slide rail is 0 to 4092, how to deal with this or leave as 1023? - going to test
 //look at defining all numbers at top for 4 functions
 void lift()
 {
     int val2 = 4092; //all the way up, was 168 in mapped number when tested
-    //may not need the map effort since when testing I printed the mapped value
-    //see what Kori says
     val2 = map(val2, 0, 4092, 0, 180);
     myRail.write(val2);
     delay(15); // is it necessary for it to get to position?
