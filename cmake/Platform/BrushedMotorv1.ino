@@ -106,7 +106,6 @@ void ledLight()
     {
         setLight(251, 0, 255);
     }
-    setLight();
 }
 
 void button() //the button led light function
