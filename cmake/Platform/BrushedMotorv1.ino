@@ -11,20 +11,24 @@
 #define address1 0x80
 #define address2 0x81
 
+
+
 //#define ir_sensor1 1 //Sharp IR (4-30cm, analog)
 //#define ir_sensor2 2 //
 
+//pin definitions
 int enablePin = 46; //digital pin - motor enable
 int buttonPin = 50; //digital pin - button light up
-bool lightState = false;
 int interruptPin = 3; //digital pin - enable and disable interrupt
-int valueOn = 0; // used as toggle for on and off
 int red = 11; //pwm of led, pin
 int green = 10; //pwm of led, pin
 int blue = 9; //pwm of led, pin
 int slideRail = 4; //pin
 int claw = 5; //pin
 int serialPin = 22; // pin
+bool lightState = false;
+
+int redVar, blueVar, greenVar;
 volatile int buttonState = LOW;
 unsigned long lastIntTime = 0;
 unsigned long lastBlinkTime = 0;
@@ -46,6 +50,7 @@ void lower();
 void open();
 void close();
 void returnState();
+void setLight(int redVar, int greenVar, int blueVar);
 
 
 void setup()
@@ -71,7 +76,6 @@ void setup()
 
 void loop()
 {
-    ledLight();
     button();
     serial1Check();
     serialEvent();
@@ -80,25 +84,32 @@ void loop()
 
 }
 
+void setLight(int r, int g, int b)
+{
+    redVar = r;
+    greenVar = g;
+    blueVar = b;
+
+    analogWrite(red, redVar);
+    analogWrite(green, greenVar);
+    analogWrite(blue, blueVar);
+
+}
 void ledLight()
 {
     //have led light red when not in use, reversed for PWM, 0 is highest
     if (buttonState == LOW)
     {
-        analogWrite(red, 0);
-        analogWrite(green, 252);
-        analogWrite(blue, 255);
+        setLight(0, 252, 255);
     }
     else if (buttonState == HIGH) //green when in use
     {
-        analogWrite(red, 251);
-        analogWrite(green, 0);
-        analogWrite(blue, 255);
+        setLight(251, 0, 255);
     }
-
+    setLight();
 }
 
-void button() //the button led light method
+void button() //the button led light function
 {
     if (buttonState == LOW)
     {
@@ -121,6 +132,7 @@ void turnOn()
         buttonState = !buttonState;
         controlEn(buttonState);
         lastIntTime = millis();
+        setLight();
     }
 }
 
@@ -171,9 +183,8 @@ void serial1Check()
 {
     while (Serial1.available())
     {
-        analogWrite(red, 255);
-        analogWrite(blue, 30);
-        analogWrite(green,0 );
+        //teal
+        setLight(255, 30, 0);
         Serial.write(Serial1.read());
     }
 }
@@ -186,9 +197,8 @@ void serial1Write()
 
     while (digitalRead(serialPin) == HIGH && i < 50)
     {
-        analogWrite(red, 0);
-        analogWrite(blue, 210);
-        analogWrite(green, 255);
+        //orange
+        setLight(0,255,206);
 
         if (Serial.available())
         {
@@ -223,6 +233,7 @@ void serial1Write()
 }*/
 
 //in documentation said slide rail is 0 to 4092, how to deal with this or leave as 1023? - going to test
+//look at defining all numbers at top for 4 functions
 void lift()
 {
     int val2 = 4092; //all the way up, was 168 in mapped number when tested
