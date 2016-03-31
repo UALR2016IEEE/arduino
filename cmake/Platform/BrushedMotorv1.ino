@@ -198,6 +198,7 @@ void serial1Write()
     }
     Serial.write(packet_len);
     Serial.write('1');
+
     //red
     setLight(0,255,255);
 
