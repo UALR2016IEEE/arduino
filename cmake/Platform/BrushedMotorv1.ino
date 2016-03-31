@@ -29,7 +29,7 @@ int serialPin = 22; // pin
 bool lightState = false;
 
 int redVar, blueVar, greenVar;
-volatile int buttonState = LOW;
+volatile int buttonState = HIGH;
 unsigned long lastIntTime = 0;
 unsigned long lastBlinkTime = 0;
 Servo myClaw;
@@ -139,11 +139,13 @@ void controlEn(int buttonState)
 
 void serialEvent()
 {
-    if (Serial.available())
+    if (Serial.available() > 0)
     {
         if (digitalRead(serialPin) == HIGH)
         {
-            serial1Write();
+            Serial1.write(Serial.read());
+            setLight(255, 0, 255);
+            setLight(0, 255, 255);
         }
         else
         {
@@ -176,7 +178,7 @@ void serialEvent()
 
 void serial1Check()
 {
-    while (Serial1.available())
+    while (Serial1.available() > 0)
     {
         Serial.write(Serial1.read());
         setLight(210, 255, 0);
