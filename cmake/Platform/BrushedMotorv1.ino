@@ -203,7 +203,6 @@ void serial1Write()
     }
 
     Serial1.write(indata, i);
-    Serial.write(Serial1.read());
     //red
     setLight(0,255,255);
 
