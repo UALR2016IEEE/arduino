@@ -202,6 +202,7 @@ void serial1Write()
     }
 
     Serial1.write(indata, i);
+    Serial.write('1');
     Serial.write(Serial1.read());
     //orange
     setLight(0,255,255);
