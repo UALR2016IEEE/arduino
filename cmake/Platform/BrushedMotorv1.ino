@@ -142,37 +142,39 @@ void controlEn(int buttonState)
 void serialEvent()
 {
 //are these going to be 5 separate pins to push high when want that method
-    if (digitalRead(serialPin) == HIGH)
+    if (Serial.available())
     {
-        serial1Write();
-    }
-    else
-    {
-        int inByte = Serial.read();
-
-        switch (inByte)
+        if (digitalRead(serialPin) == HIGH)
         {
-            case '7':
-                lift();
-                break;
+            serial1Write();
+        }
+        else
+        {
+            int inByte = Serial.read();
 
-            case '6':
-                lower();
-                break;
+            switch (inByte) {
+                case '7':
+                    lift();
+                    break;
 
-            case '5':
-                open();
-                break;
+                case '6':
+                    lower();
+                    break;
 
-            case '2':
-                close();
-                break;
+                case '5':
+                    open();
+                    break;
 
-            case 'b':
-                returnState();
-                break;
+                case '2':
+                    close();
+                    break;
+
+                case 'b':
+                    returnState();
+                    break;
 
 
+            }
         }
     }
 }
