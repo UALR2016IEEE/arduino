@@ -74,9 +74,10 @@ void loop()
 {
     ledLight();
     button();
+    serial1Check();
     serialEvent();
     //getIR();
-    serial1Check();
+
 
 }
 
@@ -172,6 +173,9 @@ void serial1Check()
 {
     while (Serial1.available())
     {
+        analogWrite(red, 255);
+        analogWrite(blue, 30);
+        analogWrite(green,0 );
         Serial.write(Serial1.read());
     }
 }
@@ -184,6 +188,10 @@ void serial1Write()
 
     while (digitalRead(serialPin) == HIGH && i < 50)
     {
+        analogWrite(red, 0);
+        analogWrite(blue, 210);
+        analogWrite(green, 255);
+
         if (Serial.available())
         {
             indata[i] = Serial.read();
