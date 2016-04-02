@@ -168,6 +168,10 @@ void serialEvent()
                     close();
                     break;
 
+                case 'c':
+                    turnOn();
+                    break;
+
                 case 'b':
                     returnState();
                     break;
@@ -194,8 +198,11 @@ void serial1Write()
     int packet_len = Serial.read();
     byte buf[200];
 
-    for(int x=0; x < packet_len; x++){
-        while(!Serial.available()){}
+    for(int x=0; x < packet_len; x++)
+    {
+        while(!Serial.available())
+        {}
+
         Serial1.write(Serial.read());
     }
     Serial.write(packet_len);
