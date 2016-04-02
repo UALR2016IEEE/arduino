@@ -98,11 +98,11 @@ void ledLight()
     //have led light red when not in use, reversed for PWM, 0 is highest
     if (buttonState == LOW)
     {
-        setLight(0, 252, 255);
+        setLight(0, 255, 255);
     }
     else if (buttonState == HIGH) //green when in use
     {
-        setLight(251, 0, 255);
+        setLight(255, 0, 255);
     }
 }
 
@@ -185,8 +185,8 @@ void serial1Check()
     while (Serial1.available() > 0)
     {
         Serial.write(Serial1.read());
-        setLight(210, 255, 0);
         //purple
+        setLight(0, 255, 0);
 
     }
 }
@@ -207,9 +207,6 @@ void serial1Write()
     }
     Serial.write(packet_len);
     Serial.write('1');
-
-    //red
-    setLight(0,255,255);
 
 }
 
