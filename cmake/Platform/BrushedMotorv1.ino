@@ -5,6 +5,7 @@
 
 #include <Arduino.h>
 #include <stdlib.h>
+#include <PWMServo.h>
 #include <Servo.h>
 
 //Roboclaw Address
@@ -24,7 +25,7 @@ int red = 11; //pwm of led, pin
 int green = 10; //pwm of led, pin
 int blue = 9; //pwm of led, pin
 int slideRail = 4; //pin
-int claw = 5; //pin
+int claw = SERVO_PIN_C; //pin
 int serialPin = 22; // pin
 bool lightState = false;
 
@@ -32,7 +33,7 @@ int redVar, blueVar, greenVar;
 volatile int buttonState = HIGH;
 unsigned long lastIntTime = 0;
 unsigned long lastBlinkTime = 0;
-Servo myClaw;
+PWMServo myClaw;
 Servo myRail;
 
 void getIR();
@@ -61,6 +62,7 @@ void setup()
     //pinMode(ir_sensor1, INPUT);
     //pinMode(ir_sensor2, INPUT);
     pinMode(enablePin, OUTPUT);
+    controlEn(buttonState);
     pinMode(buttonPin, OUTPUT);
     pinMode(interruptPin, INPUT);
     pinMode(serialPin, INPUT);
@@ -68,6 +70,7 @@ void setup()
     pinMode(green, OUTPUT);
     pinMode(blue, OUTPUT);
     myClaw.attach(claw);
+    close();
     myRail.attach(slideRail);
 
     attachInterrupt(1, turnOn, FALLING);
@@ -253,7 +256,7 @@ void lower()
 void close()
 {
     //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
-    int val1 = 108; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
+    int val1 = 98; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
     myClaw.write(val1);
     delay(15);
     //yellow
@@ -263,7 +266,7 @@ void close()
 void open()
 {
     //this valued is taken from its rating sheet, rated at 180 degree only hits 160
-    int val1 = 166; // open position, make sure
+    int val1 = 159; // open position, make sure
     myClaw.write(val1);
     delay(15);
     //yellow
