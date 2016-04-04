@@ -87,7 +87,7 @@ void loop()
 
 void setLight(int r, int g, int b, float bright)
 {
-    brightness =  bright;
+    float brightness =  bright;
     redVar = (255 -r) * brightness;
     greenVar = (255 - g) * brightness;
     blueVar = (255 - b) * brightness;
