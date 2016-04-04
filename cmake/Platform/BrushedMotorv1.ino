@@ -85,11 +85,13 @@ void loop()
     //getIR();
 }
 
-void setLight(int r, int g, int b)
+void setLight(int r, int g, int b, float bright)
 {
-    redVar = r;
-    greenVar = g;
-    blueVar = b;
+    brightness =  bright;
+    redVar = (255 -r) * brightness;
+    greenVar = (255 - g) * brightness;
+    blueVar = (255 - b) * brightness;
+
 
     analogWrite(red, redVar);
     analogWrite(green, greenVar);
@@ -101,11 +103,11 @@ void ledLight()
     //have led light red when not in use, reversed for PWM, 0 is highest
     if (buttonState == LOW)
     {
-        setLight(0, 252, 255);
+        setLight(255, 0, 0, .5);
     }
     else if (buttonState == HIGH) //green when in use
     {
-        setLight(251, 0, 255);
+        setLight(0, 255, 0, 1);
     }
 }
 
@@ -147,8 +149,8 @@ void serialEvent()
         if (digitalRead(serialPin) == HIGH)
         {
             Serial1.write(Serial.read());
-            setLight(255, 0, 255);
-            setLight(0, 255, 255);
+            setLight(0, 255, 0, .5);
+            setLight(255, 0, 0, .5);
         }
         else
         {
@@ -171,6 +173,10 @@ void serialEvent()
                     close();
                     break;
 
+                case 'c':
+                    turnOn();
+                    break;
+
                 case 'b':
                     returnState();
                     break;
@@ -184,8 +190,8 @@ void serial1Check()
     while (Serial1.available() > 0)
     {
         Serial.write(Serial1.read());
-        setLight(210, 255, 0);
         //purple
+        setLight(255, 0, 255, .5);
 
     }
 }
@@ -197,15 +203,15 @@ void serial1Write()
     int packet_len = Serial.read();
     byte buf[200];
 
-    for(int x=0; x < packet_len; x++){
-        while(!Serial.available()){}
+    for(int x=0; x < packet_len; x++)
+    {
+        while(!Serial.available())
+        {}
+
         Serial1.write(Serial.read());
     }
     Serial.write(packet_len);
     Serial.write('1');
-
-    //red
-    setLight(0,255,255);
 
 }
 
@@ -239,7 +245,7 @@ void lift()
     myRail.write(val2);
     delay(15); // is it necessary for it to get to position?
     //blue
-    setLight(255, 255, 0);
+    setLight(0, 0, 255, 1);
 }
 
 void lower()
@@ -250,7 +256,7 @@ void lower()
     myRail.write(val2);
     delay(15); // is it necessary for it to get to position?
     //blue
-    setLight(255, 255, 0);
+    setLight(0, 0, 255, .4);
 }
 
 void close()
@@ -260,7 +266,7 @@ void close()
     myClaw.write(val1);
     delay(15);
     //yellow
-    setLight(255, 0, 0);
+    setLight(0, 255, 255, 1);
 }
 
 void open()
@@ -270,7 +276,7 @@ void open()
     myClaw.write(val1);
     delay(15);
     //yellow
-    setLight(255, 0,0);
+    setLight(255, 0,0, 1);
 }
 
 void returnState()
