@@ -240,28 +240,35 @@ void serial1Write()
 //look at defining all numbers at top for 4 functions
 void lift()
 {
-    int val2 = 4092; //all the way up, was 168 in mapped number when tested
-    val2 = map(val2, 0, 4092, 0, 180);
-    myRail.write(val2);
-    delay(15); // is it necessary for it to get to position?
     //blue
     setLight(0, 0, 255, 1);
+
+    for (int i = 0; i < 4092; i++)
+    {
+       // int val2 = 4092; //all the way up, was 168 in mapped number when tested
+        int val2 = map(i, 0, 4092, 0, 180);
+        myRail.write(val2);
+    }
+
 }
 
 void lower()
 {
-    //was 70 in in mapped number when tested
-    int val2 = 0; //all the way down - this needs need to be calibrated when installed on the robot to make sure
-    val2 = map(val2, 0, 4092, 0, 180);
-    myRail.write(val2);
-    delay(15); // is it necessary for it to get to position?
     //blue
     setLight(0, 0, 255, .4);
+
+    for (int i = 4092; i >= 0; i--)
+    {
+        //int val2 = 0; //all the way down - this needs need to be calibrated when installed on the robot to make sure
+        int val2 = map(i, 0, 4092, 0, 180);
+        myRail.write(val2);
+    }
 }
 
 void close()
 {
     //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
+
     int val1 = 98; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
     myClaw.write(val1);
     delay(15);
