@@ -13,15 +13,15 @@
 #define address1 0x80
 #define address2 0x81
 //Rail Constants - will change with testing
-#define allUp 255
-#define halfWay 128
+#define allUp 180
+#define halfWay 90
 #define allDown 0
 //Claw Constants - will change with testing
 #define loosePos 102
 #define openPos 159
 #define closePos 98
 //Hold Servo Constants - these values are not confirmed
-#define engageHold 140
+#define engageHold 180
 #define deEngageHold 0
 
 
@@ -253,7 +253,6 @@ void serial1Write()
 
 void pickUp()
 {
-    railEngage = true;
     myRail.attach(slideRail);
     //open claw
     open();
@@ -284,16 +283,15 @@ void letDown()
     //de-engage second servo to open position
     deEngage();
     //lower rails all the way down (slowly)
-    lower(allUp, allDown);
+    lower(allDown);
     //open claw
     open();
     //raise to halfway
     lift(halfWay);
     delay(500);
+    railTransit();
     myRail.detach();
     Serial.write('6');
-    railEngage = false;
-    railTransit();
 }
 
 void lift(int height)
@@ -301,54 +299,34 @@ void lift(int height)
     //may just write the value instead of the if
     //blue
     setLight(0, 0, 255, 1);
-    int liftHeight = height;
-    int val2 = 0;
-
-    if (liftHeight == allUp ) //(168)
-    {
-        val2 = allUp;
-        myRail.write(val2);
-    }
-    else
-    {
-        val2 = halfWay; //84
-        myRail.write(val2);
-    }
-
+    myRail.write(height);
 }
 
-void lower(int height, int endHeight)
+void lower(int endHeight)
 {
     //blue
     setLight(0, 0, 255, .4);
-    int heightNow = height;
-    int endHeightNow = endHeight;
+    int heightNow = myRail.read();
 
-    for (int i = heightNow; i >= endHeightNow; i--)
+    for (int height = heightNow; height <= endHeight; height--)
     {
         //int val2 = map(i, 0, 4092, 0, 180); - dont need, may need to look at
-        //run test and print without mapping to get highest and lowest number for the rails
-        int val2 = i;
-        myRail.write(val2);
+        //run test and print without mapping to get highest and lowest number for the rail
+        myRail.write(height);
+        delay(2);
         //do I need minimal delay (will see in testing)
     }
 }
 
 void railTransit()
 {
-    if (railEngage == false)
-    {
-        myRail.write(halfWay);
-        myRail.detach();
-    }
+    myRail.write(halfWay);
 }
 
 void close()
 {
     //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
-
-    int val1 = closePos; // (definition)
-    myClaw.write(val1);
+    myClaw.write(clowPos);
     delay(15);
     //yellow
     setLight(0, 255, 255, 1);
@@ -358,30 +336,26 @@ void open()
 {
     //yellow
     setLight(255, 0,0, 1);
-    int val1 = openPos; // (definition)
-    myClaw.write(val1);
+    myClaw.write(openPos);
     delay(15);
 }
 
 void loosen()
 {
     //to loosen the claw for travel - part to not kill servo
-    int val1 = loosePos;
-    myClaw.write(val1);
+    myClaw.write(loosePos);
     //see if I need delay? - will see in testing
 }
 
 void engage()
 {
-    //engage to be under the victim (values will come from testing)
-    int val1 = engageHold;
-    holdServo.write(val1);
+    //engage to be under the victim (values will come from testing
+    holdServo.write(engageHold);
 }
 
 void deEngage()
 {
-    int val1 = deEngageHold;
-    holdServo.write(val1);
+    holdServo.write(deEngageHold);
 }
 
 void returnState()
