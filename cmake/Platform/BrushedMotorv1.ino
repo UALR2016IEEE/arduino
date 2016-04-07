@@ -250,6 +250,7 @@ void serial1Write()
 
 void pickUp()
 {
+    myRail.attach();
     //open claw
     open();
     //lower rails - allDown
@@ -264,11 +265,13 @@ void pickUp()
     lift(halfWay); //may have to change to gradual lower
     //release claw a couple of marks
     loosen();
+    myRail.detach();
 
 }
 
 void letDown()
 {
+    myRail.attach();
     //close claw completely
     close();
     //lift rails all the way
@@ -281,6 +284,8 @@ void letDown()
     open();
     //raise to halfway
     lift(halfWay);
+    delay(500);
+    myRail.detach();
 }
 
 void lift(int height)
