@@ -61,7 +61,7 @@ void turnOn();
 void controlEn(int buttonState);
 void button();
 void lift(int height); //make these definitions: allUp, halfWay, allDown
-void lower(int height, int endHeight);
+void lower(int endHeight);
 void open();
 void close();
 void pickUp();
@@ -92,7 +92,7 @@ void setup()
     myClaw.attach(claw);
     close();
     holdServo.attach(hold_pin);
-    deEngageHold();
+    deEngage();
     myRail.attach(slideRail);
     railTransit();
     myRail.detach();
