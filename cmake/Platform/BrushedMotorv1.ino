@@ -2,6 +2,7 @@
 // Created by Autumn Rouse on 3/7/16.
 //Set mode to 7 (packet serial address 0x80) and option to 4(38400) on first roboclaw
 //Set mode to 8(address 0x81) on seconds roboclaw
+//all definitions need to be tuned at competition
 
 #include <Arduino.h>
 #include <stdlib.h>
@@ -11,7 +12,17 @@
 //Roboclaw Address
 #define address1 0x80
 #define address2 0x81
-
+//Rail Constants - will change with testing
+#define allUp 168
+#define halfWay 84
+#define allDown 0
+//Claw Constants - will change with testing
+#define loosePos 102
+#define openPos 159
+#define closePos 98
+//Hold Servo Constants - these values are not confirmed
+#define engageHold 140
+#define deEngageHold 0
 
 
 //#define ir_sensor1 1 //Sharp IR (4-30cm, analog)
@@ -35,6 +46,7 @@ unsigned long lastIntTime = 0;
 unsigned long lastBlinkTime = 0;
 PWMServo myClaw;
 Servo myRail;
+Servo holdServo;
 
 void getIR();
 void serialEvent();
@@ -46,10 +58,15 @@ void ledLight();
 void turnOn();
 void controlEn(int buttonState);
 void button();
-void lift();
-void lower();
+void lift(int height); //make these definitions: allUp, halfWay, allDown
+void lower(int height, int endHeight);
 void open();
 void close();
+void pickUp();
+void letDown();
+void engage();
+void deEngage();
+void loosen();
 void returnState();
 void setLight(int redVar, int greenVar, int blueVar);
 
@@ -158,19 +175,11 @@ void serialEvent()
 
             switch (inByte) {
                 case '7':
-                    lift();
+                    pickUp();
                     break;
 
                 case '6':
-                    lower();
-                    break;
-
-                case '5':
-                    open();
-                    break;
-
-                case '2':
-                    close();
+                    letDown();
                     break;
 
                 case 'c':
@@ -238,30 +247,77 @@ void serial1Write()
 }*/
 
 //look at defining all numbers at top for 4 functions
-void lift()
+
+void pickUp()
 {
+    //open claw
+    open();
+    //lower rails - allDown
+    lower(halfWay, allDown);
+    //close claw
+    close();
+    //lift rails - allUp
+    lift(allUp);
+    //engage second servo to close position
+    engage();
+    //lower rails to half high
+    lift(halfWay); //may have to change to gradual lower
+    //release claw a couple of marks
+    loosen();
+
+}
+
+void letDown()
+{
+    //close claw completely
+    close();
+    //lift rails all the way
+    lift(allUp);
+    //de-engage second servo to open position
+    deEngage();
+    //lower rails all the way down (slowly)
+    lower(allUp, allDown);
+    //open claw
+    open();
+    //raise to halfway
+    lift(halfWay);
+}
+
+void lift(int height)
+{
+    //may just write the value instead of the if
     //blue
     setLight(0, 0, 255, 1);
+    int liftHeight = height;
+    int val2 = 0;
 
-    for (int i = 0; i < 4092; i++)
+    if (liftHeight == allUp ) //(168)
     {
-       // int val2 = 4092; //all the way up, was 168 in mapped number when tested
-        int val2 = map(i, 0, 4092, 0, 180);
+        val2 = allUp;
+        myRail.write(val2);
+    }
+    else
+    {
+       val2 = halfWay; //84
         myRail.write(val2);
     }
 
 }
 
-void lower()
+void lower(int height, int endHeight)
 {
     //blue
     setLight(0, 0, 255, .4);
+    int heightNow = height;
+    int endHeight = endHeight;
 
-    for (int i = 4092; i >= 0; i--)
+    for (int i = heightNow; i >= endHeight; i--)
     {
-        //int val2 = 0; //all the way down - this needs need to be calibrated when installed on the robot to make sure
-        int val2 = map(i, 0, 4092, 0, 180);
+        //int val2 = map(i, 0, 4092, 0, 180); - dont need, may need to look at
+        //run test and print without mapping to get highest and lowest number for the rails
+        int val2 = i;
         myRail.write(val2);
+        //do I need minimal delay (will see in testing)
     }
 }
 
@@ -269,7 +325,7 @@ void close()
 {
     //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
 
-    int val1 = 98; // closed position, make sure %% maybe could put little rubber grips on tips to make more secure
+    int val1 = closePos; // (definition)
     myClaw.write(val1);
     delay(15);
     //yellow
@@ -278,12 +334,32 @@ void close()
 
 void open()
 {
-    //this valued is taken from its rating sheet, rated at 180 degree only hits 160
-    int val1 = 159; // open position, make sure
-    myClaw.write(val1);
-    delay(15);
     //yellow
     setLight(255, 0,0, 1);
+    int val1 = openPos; // (definition)
+    myClaw.write(val1);
+    delay(15);
+}
+
+void loosen()
+{
+    //to loosen the claw for travel - part to not kill servo
+    int val1 = loosePos;
+    myClaw.write(val1);
+    //see if I need delay? - will see in testing
+}
+
+void engage()
+{
+    //engage to be under the victim (values will come from testing)
+    int val1 = engageHold;
+    holdServo.write(val1);
+}
+
+void deEngage()
+{
+    int val1 = deEngageHold;
+    holdServo.write(val1);
 }
 
 void returnState()
