@@ -13,8 +13,8 @@
 #define address1 0x80
 #define address2 0x81
 //Rail Constants - will change with testing
-#define allUp 168
-#define halfWay 84
+#define allUp 255
+#define halfWay 128
 #define allDown 0
 //Claw Constants - will change with testing
 #define loosePos 102
@@ -39,6 +39,7 @@ int slideRail = 4; //pin
 int claw = SERVO_PIN_C; //pin
 int serialPin = 22; // pin
 bool lightState = false;
+bool railEngage = false;
 
 int redVar, blueVar, greenVar;
 volatile int buttonState = HIGH;
@@ -68,6 +69,7 @@ void engage();
 void deEngage();
 void loosen();
 void returnState();
+void railTransit();
 void setLight(int redVar, int greenVar, int blueVar);
 
 
@@ -89,6 +91,7 @@ void setup()
     myClaw.attach(claw);
     close();
     myRail.attach(slideRail);
+    railTransit();
 
     attachInterrupt(1, turnOn, FALLING);
 
@@ -250,7 +253,8 @@ void serial1Write()
 
 void pickUp()
 {
-    myRail.attach();
+    railEngage = true;
+    myRail.attach(slideRail);
     //open claw
     open();
     //lower rails - allDown
@@ -266,12 +270,13 @@ void pickUp()
     //release claw a couple of marks
     loosen();
     myRail.detach();
+    Serial.write('7');
 
 }
 
 void letDown()
 {
-    myRail.attach();
+    myRail.attach(slideRail);
     //close claw completely
     close();
     //lift rails all the way
@@ -286,6 +291,9 @@ void letDown()
     lift(halfWay);
     delay(500);
     myRail.detach();
+    Serial.write('6');
+    railEngage = false;
+    railTransit();
 }
 
 void lift(int height)
@@ -303,7 +311,7 @@ void lift(int height)
     }
     else
     {
-       val2 = halfWay; //84
+        val2 = halfWay; //84
         myRail.write(val2);
     }
 
@@ -314,15 +322,24 @@ void lower(int height, int endHeight)
     //blue
     setLight(0, 0, 255, .4);
     int heightNow = height;
-    int endHeight = endHeight;
+    int endHeightNow = endHeight;
 
-    for (int i = heightNow; i >= endHeight; i--)
+    for (int i = heightNow; i >= endHeightNow; i--)
     {
         //int val2 = map(i, 0, 4092, 0, 180); - dont need, may need to look at
         //run test and print without mapping to get highest and lowest number for the rails
         int val2 = i;
         myRail.write(val2);
         //do I need minimal delay (will see in testing)
+    }
+}
+
+void railTransit()
+{
+    if (railEngage == false)
+    {
+        myRail.write(halfWay);
+        myRail.detach();
     }
 }
 
