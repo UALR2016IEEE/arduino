@@ -37,6 +37,7 @@ int green = 10; //pwm of led, pin
 int blue = 9; //pwm of led, pin
 int slideRail = 4; //pin
 int claw = SERVO_PIN_C; //pin
+int hold_pin = 12;
 int serialPin = 22; // pin
 bool lightState = false;
 bool railEngage = false;
@@ -90,8 +91,11 @@ void setup()
     pinMode(blue, OUTPUT);
     myClaw.attach(claw);
     close();
+    holdServo.attach(hold_pin);
+    deEngageHold();
     myRail.attach(slideRail);
     railTransit();
+    myRail.detach();
 
     attachInterrupt(1, turnOn, FALLING);
 
