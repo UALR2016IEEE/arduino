@@ -177,6 +177,9 @@ void serialEvent()
             int inByte = Serial.read();
 
             switch (inByte) {
+                case '8':
+                    preparePickUp();
+
                 case '7':
                     pickUp();
                     break;
@@ -251,13 +254,17 @@ void serial1Write()
 
 //look at defining all numbers at top for 4 functions
 
-void pickUp()
-{
+void preparePickUp() {
     myRail.attach(slideRail);
     //open claw
     open();
     //lower rails - allDown
-    lower(halfWay, allDown);
+    lower(allDown);
+    Serial.write('8');
+}
+
+void pickUp()
+{
     //close claw
     close();
     //lift rails - allUp
@@ -326,7 +333,7 @@ void railTransit()
 void close()
 {
     //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
-    myClaw.write(clowPos);
+    myClaw.write(closePos);
     delay(15);
     //yellow
     setLight(0, 255, 255, 1);
