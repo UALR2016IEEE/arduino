@@ -17,9 +17,9 @@
 #define halfWay 170
 #define allDown 0
 //Claw Constants - will change with testing
-#define loosePos 102
-#define openPos 159
-#define closePos 98
+#define loosePos 77
+#define openPos 126
+#define closePos 76
 //Hold Servo Constants - these values are not confirmed
 #define engageHold 180
 #define deEngageHold 0
