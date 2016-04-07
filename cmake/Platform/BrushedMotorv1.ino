@@ -69,6 +69,7 @@ void letDown();
 void engage();
 void deEngage();
 void loosen();
+void preparePickUP();
 void returnState();
 void railTransit();
 void setLight(int redVar, int greenVar, int blueVar);
