@@ -14,7 +14,7 @@
 #define address2 0x81
 //Rail Constants - will change with testing
 #define allUp 180
-#define halfWay 90
+#define halfWay 170
 #define allDown 0
 //Claw Constants - will change with testing
 #define loosePos 102
