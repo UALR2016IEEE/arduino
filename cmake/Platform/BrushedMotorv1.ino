@@ -69,7 +69,7 @@ void letDown();
 void engage();
 void deEngage();
 void loosen();
-void preparePickUP();
+void preparePickUp();
 void returnState();
 void railTransit();
 void setLight(int redVar, int greenVar, int blueVar);
@@ -184,6 +184,7 @@ void serialEvent()
             switch (inByte) {
                 case '8':
                     preparePickUp();
+                    break;
 
                 case '7':
                     pickUp();
@@ -326,7 +327,6 @@ void lower(int endHeight)
         //run test and print without mapping to get highest and lowest number for the rail
         myRail.write(height);
         delay(2);
-        //do I need minimal delay (will see in testing)
     }
 }
 
