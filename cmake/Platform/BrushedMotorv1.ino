@@ -37,7 +37,7 @@ int green = 10; //pwm of led, pin
 int blue = 9; //pwm of led, pin
 int slideRail = 4; //pin
 int claw = SERVO_PIN_C; //pin
-int hold_pin = 12;
+int hold_pin = SERVO_PIN_B;
 int serialPin = 22; // pin
 bool lightState = false;
 bool railEngage = false;
@@ -48,7 +48,7 @@ unsigned long lastIntTime = 0;
 unsigned long lastBlinkTime = 0;
 PWMServo myClaw;
 Servo myRail;
-Servo holdServo;
+PWMServo holdServo;
 
 void getIR();
 void serialEvent();
@@ -209,7 +209,6 @@ void serialEvent()
     }
 }
 
-
 void serial1Check()
 {
     while (Serial1.available() > 0)
@@ -360,7 +359,6 @@ void loosen()
 {
     //to loosen the claw for travel - part to not kill servo
     myClaw.write(loosePos);
-    //see if I need delay? - will see in testing
 }
 
 void engage()
