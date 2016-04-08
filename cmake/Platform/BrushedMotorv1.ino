@@ -14,12 +14,12 @@
 #define address2 0x81
 //Rail Constants - will change with testing
 #define allUp 180
-#define halfWay 170
+#define halfWay 160
 #define allDown 0
 //Claw Constants - will change with testing
 #define loosePos 77
 #define openPos 126
-#define closePos 76
+#define closePos 69
 //Hold Servo Constants - these values are not confirmed
 #define engageHold 180
 #define deEngageHold 0
@@ -61,7 +61,7 @@ void turnOn();
 void controlEn(int buttonState);
 void button();
 void lift(int height); //make these definitions: allUp, halfWay, allDown
-void lower(int endHeight);
+void lower(int endHeight, int rate);
 void open();
 void close();
 void pickUp();
@@ -184,14 +184,17 @@ void serialEvent()
             switch (inByte) {
                 case '8':
                     preparePickUp();
+                    Serial.write('8');
                     break;
 
                 case '7':
                     pickUp();
+                    Serial.write('7');
                     break;
 
                 case '6':
                     letDown();
+                    Serial.write('6');
                     break;
 
                 case 'c':
@@ -262,12 +265,12 @@ void serial1Write()
 //look at defining all numbers at top for 4 functions
 
 void preparePickUp() {
+    deEngage();
     myRail.attach(slideRail);
     //open claw
     open();
     //lower rails - allDown
-    lower(allDown);
-    Serial.write('8');
+    lower(allDown, 2);
 }
 
 void pickUp()
@@ -276,15 +279,15 @@ void pickUp()
     close();
     //lift rails - allUp
     lift(allUp);
+    delay(700);
     //engage second servo to close position
     engage();
     //lower rails to half high
     lift(halfWay); //may have to change to gradual lower
+    delay(500);
     //release claw a couple of marks
     loosen();
     myRail.detach();
-    Serial.write('7');
-
 }
 
 void letDown()
@@ -294,10 +297,11 @@ void letDown()
     close();
     //lift rails all the way
     lift(allUp);
+    delay(200);
     //de-engage second servo to open position
     deEngage();
     //lower rails all the way down (slowly)
-    lower(allDown);
+    lower(allDown, 5);
     //open claw
     open();
     //raise to halfway
@@ -305,7 +309,6 @@ void letDown()
     delay(500);
     railTransit();
     myRail.detach();
-    Serial.write('6');
 }
 
 void lift(int height)
@@ -316,18 +319,18 @@ void lift(int height)
     myRail.write(height);
 }
 
-void lower(int endHeight)
+void lower(int endHeight, int rate)
 {
     //blue
     setLight(0, 0, 255, .4);
     int heightNow = myRail.read();
 
-    for (int height = heightNow; height <= endHeight; height--)
+    for (int height = heightNow; height >= endHeight; height--)
     {
         //int val2 = map(i, 0, 4092, 0, 180); - dont need, may need to look at
         //run test and print without mapping to get highest and lowest number for the rail
         myRail.write(height);
-        delay(2);
+        delay(rate);
     }
 }
 
@@ -364,11 +367,13 @@ void engage()
 {
     //engage to be under the victim (values will come from testing
     holdServo.write(engageHold);
+    delay(500);
 }
 
 void deEngage()
 {
     holdServo.write(deEngageHold);
+    delay(500);
 }
 
 void returnState()
