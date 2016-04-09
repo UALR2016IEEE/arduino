@@ -329,6 +329,7 @@ void lower(int endHeight, int rate)
 void railTransit()
 {
     myRail.write(halfWay);
+    close();
 }
 
 void close()
