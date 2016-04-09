@@ -174,8 +174,6 @@ void serialEvent()
         if (digitalRead(serialPin) == HIGH)
         {
             Serial1.write(Serial.read());
-            setLight(0, 255, 0, .5);
-            setLight(255, 0, 0, .5);
         }
         else
         {
@@ -211,9 +209,6 @@ void serial1Check()
     while (Serial1.available() > 0)
     {
         Serial.write(Serial1.read());
-        //purple
-        setLight(255, 0, 255, .5);
-
     }
 }
 
@@ -310,15 +305,11 @@ void letDown()
 void lift(int height)
 {
     //may just write the value instead of the if
-    //blue
-    setLight(0, 0, 255, 1);
     myRail.write(height);
 }
 
 void lower(int endHeight)
 {
-    //blue
-    setLight(0, 0, 255, .4);
     int heightNow = myRail.read();
 
     for (int height = heightNow; height <= endHeight; height--)
@@ -340,14 +331,10 @@ void close()
     //can be changed at competition to make sure it is right, needs to be tested with actual victim peg
     myClaw.write(closePos);
     delay(15);
-    //yellow
-    setLight(0, 255, 255, 1);
 }
 
 void open()
 {
-    //yellow
-    setLight(255, 0,0, 1);
     myClaw.write(openPos);
     delay(15);
 }
