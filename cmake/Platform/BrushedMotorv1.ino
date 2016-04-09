@@ -301,6 +301,8 @@ void letDown()
     //open claw
     open();
     //raise to halfway
+    lift(halfWay);
+
     railTransit();
     delay(500);
     myRail.detach();
