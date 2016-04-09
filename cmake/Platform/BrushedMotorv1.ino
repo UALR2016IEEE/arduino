@@ -304,6 +304,7 @@ void letDown()
     railTransit();
     delay(500);
     myRail.detach();
+
 }
 
 void lift(int height)
