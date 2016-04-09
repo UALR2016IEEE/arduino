@@ -17,7 +17,7 @@
 #define halfWay 160
 #define allDown 0
 //Claw Constants - will change with testing
-#define loosePos 77
+#define loosePos 73
 #define openPos 126
 #define closePos 69
 //Hold Servo Constants - these values are not confirmed
@@ -91,6 +91,8 @@ void setup()
     pinMode(green, OUTPUT);
     pinMode(blue, OUTPUT);
     myClaw.attach(claw);
+    open();
+    delay(300);
     close();
     holdServo.attach(hold_pin);
     deEngage();
