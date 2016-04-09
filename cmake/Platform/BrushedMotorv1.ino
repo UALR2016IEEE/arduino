@@ -115,9 +115,9 @@ void loop()
 void setLight(int r, int g, int b, float bright)
 {
     float brightness =  bright;
-    redVar = (255 -r) * brightness;
-    greenVar = (255 - g) * brightness;
-    blueVar = (255 - b) * brightness;
+    redVar = (255 -r);
+    greenVar = (255 - g);
+    blueVar = (255 - b);
 
 
     analogWrite(red, redVar);
@@ -130,11 +130,11 @@ void ledLight()
     //have led light red when not in use, reversed for PWM, 0 is highest
     if (buttonState == LOW)
     {
-        setLight(255, 0, 0, .5);
+        setLight(180, 0, 0, .5);
     }
     else if (buttonState == HIGH) //green when in use
     {
-        setLight(0, 255, 0, 1);
+        setLight(0, 180, 0, 1);
     }
 }
 
