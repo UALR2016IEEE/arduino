@@ -295,9 +295,8 @@ void letDown()
     //open claw
     open();
     //raise to halfway
-    lift(halfWay);
-    delay(500);
     railTransit();
+    delay(500);
     myRail.detach();
     Serial.write('6');
 }
